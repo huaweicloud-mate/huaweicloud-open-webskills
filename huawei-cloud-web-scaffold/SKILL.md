@@ -9,6 +9,11 @@ description: 初始化 Vue 3 + TypeScript + Vite + Opentiny + Pinia 前端项目
 
 执行前先问用户项目名称。所有文件名和代码按以下规范生成。
 
+## 核心规则
+
+- **优先使用 Opentiny 组件**：生成代码时，凡 Opentiny 能覆盖的 UI 能力（按钮、表单、弹窗、表格、消息提示、分页、布局等），一律使用 @opentiny/vue 组件实现，禁止用原生 HTML/CSS/JS 自行实现。
+- **Opentiny 组件用法参考官方 Skill**：https://docs.opentiny.design/tiny-vue/guide/skills.html （组件 API、示例与最佳实践以该文档为准）。
+
 ## 步骤
 
 ### 1. 创建项目目录
