@@ -1,0 +1,4 @@
+interface:
+  display_name: "华为云官网 UI 设计规范 Skill"
+  short_description: "华为云官网/开发者官网视觉规范的 HTML/CSS 页面生成：设计 Token、组件库、布局与响应式"
+  default_prompt: "使用 $huawei-cloud-web-ui 生成一个华为云官网风格的页面"

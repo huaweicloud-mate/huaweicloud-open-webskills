@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HWC - 示例页面</title>
+
+  <!-- 设计 Token -->
+  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/3.0.6/theme-token.css">
+
+  <style>
+    /* ========== 基础 ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, HuaweiSans, Helvetica Neue, Helvetica, Arial,
+                   PingFang SC, Hiragino Sans GB, STHeiti, Microsoft YaHei, sans-serif;
+      color: var(--por-color-text-primary, #191919);
+      background: #fff;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ========== 容器 ========== */
+    .por-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    @media (max-width: 1439px) { .por-container { max-width: 1200px; } }
+    @media (max-width: 767px) { .por-container { padding: 0 15px; } }
+
+    /* ========== 页头 ========== */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #191919;
+    }
+    .header-logo img { height: 28px; }
+    .header-nav { display: flex; gap: 28px; }
+    .header-nav a {
+      font-size: 14px;
+      color: #575D6C;
+      transition: color 0.2s;
+    }
+    .header-nav a:hover { color: #C7000B; }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+
+    /* ========== Hero 产品卡片 ========== */
+    .hero-section { padding: 48px 0 0; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 768px) { .hero-grid { grid-template-columns: 1fr; } }
+
+    .hero-card {
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+      color: #fff;
+      padding: 32px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: transform 0.2s;
+    }
+    .hero-card:hover { transform: translateY(-4px); }
+    .hero-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 22px;
+      margin-bottom: 20px;
+    }
+
+    /* ========== 按钮 ========== */
+    .btn {
+      display: inline-block;
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+      transition: all 0.2s;
+      height: 32px;
+      font-size: 14px;
+      line-height: 30px;
+      padding: 0 24px;
+      border-radius: 2px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn-secondary {
+      background: transparent;
+      border-color: rgba(255,255,255,0.5);
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: #fff;
+      color: #191919;
+      border-color: #fff;
+    }
+    .btn-primary {
+      background: #191919;
+      border-color: #191919;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #595959;
+      border-color: #595959;
+    }
+
+    /* ========== Section ========== */
+    .por-section { padding: 76px 0; }
+    .section-gray { background: #F5F5F5; }
+    .section-header {
+      margin-bottom: 40px;
+    }
+    .section-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #191919;
+      margin-bottom: 8px;
+    }
+    .section-subtitle {
+      font-size: 14px;
+      color: #595959;
+    }
+
+    /* ========== 产品网格卡片 ========== */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(0,0,0,0.05);
+    }
+    @media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .product-grid { grid-template-columns: 1fr; } }
+
+    .product-card {
+      background: #fff;
+      padding: 24px;
+      transition: box-shadow 0.2s;
+    }
+    .product-card:hover {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      z-index: 1;
+      position: relative;
+    }
+    .product-card .card-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 16px;
+      background: #F5F5F5;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .product-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #252B3A;
+      margin-bottom: 6px;
+    }
+    .product-card:hover h4 { color: #C7000B; }
+    .product-card p {
+      font-size: 12px;
+      color: #595959;
+      line-height: 18px;
+    }
+
+    /* ========== 客户案例 ========== */
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 768px) { .customer-grid { grid-template-columns: 1fr; } }
+
+    .customer-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 32px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .customer-card .quote {
+      font-size: 14px;
+      color: #595959;
+      line-height: 22px;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+    .customer-card .customer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .customer-card .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #EBEBEB;
+    }
+    .customer-card .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #191919;
+    }
+    .customer-card .role {
+      font-size: 12px;
+      color: #595959;
+    }
+
+    /* ========== 页脚 ========== */
+    #footer {
+      background: #191919;
+      color: rgba(255,255,255,0.6);
+      padding: 48px 0 32px;
+      font-size: 12px;
+    }
+    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 24px;
+    }
+    .footer-links a { color: rgba(255,255,255,0.6); }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.4); margin-left: 16px; }
+    .footer-bottom a:hover { color: rgba(255,255,255,0.8); }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-card { min-height: 200px; }
+      .por-section { padding: 40px 0; }
+      .section-title { font-size: 24px; }
+      .header-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== 页头 ========== -->
+  <header id="header">
+    <div class="por-container">
+      <div class="header-inner">
+        <a href="/" class="header-logo">
+          <img src="https://www.huaweicloud.com/favicon.ico" alt="HWC">
+          <span>HWC</span>
+        </a>
+        <nav class="header-nav">
+          <a href="#">产品</a>
+          <a href="#">解决方案</a>
+          <a href="#">定价</a>
+          <a href="#">合作伙伴</a>
+          <a href="#">开发者</a>
+          <a href="#">了解HWC</a>
+        </nav>
+        <div class="header-actions">
+          <a href="#" style="font-size:14px; color:#575D6C;">登录</a>
+          <a href="#" class="btn btn-primary" style="height:32px; font-size:12px; padding:0 20px;">免费注册</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== Hero 产品展示 ========== -->
+  <section class="hero-section">
+    <div class="por-container">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <h3>HWC魔坊 (ModelArts)</h3>
+          <p>面向开发者的模型训推平台，一站式 AI 开发体验</p>
+          <a href="#" class="btn btn-secondary">了解详情</a>
+        </div>
+        <div class="hero-card" style="background: linear-gradient(135deg, #1a0a28 0%, #2a1a4a 100%);">
+          <h3>MaaS 模型即服务</h3>
+          <p>开箱即用的大模型服务，快速集成 AI 能力</p>
+          <a href="#" class="btn btn-secondary">了解详情</a>
+        </div>
+        <div class="hero-card" style="background: linear-gradient(135deg, #0a1a28 0%, #1a3a5a 100%);">
+          <h3>HWC ECS</h3>
+          <p>弹性云服务器，随时自动获取、弹性伸缩</p>
+          <a href="#" class="btn btn-secondary">了解详情</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 热门产品 ========== -->
+  <div class="por-section section-gray">
+    <div class="por-container">
+      <div class="section-header">
+        <h2 class="section-title">热门产品</h2>
+        <p class="section-subtitle">稳定可靠、安全可信、可持续发展的云服务</p>
+      </div>
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="card-icon">🖥</div>
+          <h4>弹性云服务器 ECS</h4>
+          <p>可随时自动获取、弹性伸缩的云服务器</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">🗄</div>
+          <h4>云数据库 RDS</h4>
+          <p>稳定可靠、可弹性伸缩的在线数据库服务</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">🌐</div>
+          <h4>内容分发网络 CDN</h4>
+          <p>智能分发，低延迟、高可用的加速服务</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">🔒</div>
+          <h4>Web 应用防火墙</h4>
+          <p>保障 Web 服务安全稳定</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">📦</div>
+          <h4>对象存储服务 OBS</h4>
+          <p>海量、安全、高可靠的云存储服务</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">⚡</div>
+          <h4>分布式缓存服务</h4>
+          <p>高性能、高可用的分布式缓存</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">🐳</div>
+          <h4>云容器引擎 CCE</h4>
+          <p>高性能的企业级 Kubernetes 集群</p>
+        </div>
+        <div class="product-card">
+          <div class="card-icon">🔧</div>
+          <h4>API 网关</h4>
+          <p>高性能、高可用的 API 托管服务</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 客户案例 ========== -->
+  <div class="por-section">
+    <div class="por-container">
+      <div class="section-header">
+        <h2 class="section-title">客户案例</h2>
+        <p class="section-subtitle">全球 300 万客户的共同选择</p>
+      </div>
+      <div class="customer-grid">
+        <div class="customer-card">
+          <div class="quote">"HWC为我们提供了稳定可靠的底层架构，支撑了业务的快速增长。"</div>
+          <div class="customer-info">
+            <div class="avatar"></div>
+            <div>
+              <div class="name">张三</div>
+              <div class="role">某科技公司 CTO</div>
+            </div>
+          </div>
+        </div>
+        <div class="customer-card">
+          <div class="quote">"借助HWC AI 能力，我们将模型训练效率提升了 3 倍。"</div>
+          <div class="customer-info">
+            <div class="avatar"></div>
+            <div>
+              <div class="name">李四</div>
+              <div class="role">某金融公司 技术总监</div>
+            </div>
+          </div>
+        </div>
+        <div class="customer-card">
+          <div class="quote">"HWC的全球化部署能力，帮助我们快速拓展了海外市场。"</div>
+          <div class="customer-info">
+            <div class="avatar"></div>
+            <div>
+              <div class="name">王五</div>
+              <div class="role">某电商公司 架构师</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 页脚 ========== -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="#">关于HWC</a>
+        <a href="#">HWC用户协议</a>
+        <a href="#">隐私政策声明</a>
+        <a href="#">SLA</a>
+        <a href="#">联系我们</a>
+        <a href="#">加入我们</a>
+        <a href="#">HWC社区</a>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Huawei Cloud. All rights reserved.</span>
+        <div>
+          <a href="#">粤ICP备xxxxxxxx号</a>
+          <a href="#">粤公网安备xxxxxxxx号</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
