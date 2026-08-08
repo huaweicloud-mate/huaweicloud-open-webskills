@@ -87,7 +87,7 @@ session.headers.update({"User-Agent": "Mozilla/5.0 (..."})
 首次进入页面，调用 DGW 的 islogin 接口判断是否登录：
 
 - **无 ticket 参数**：仅探测登录态
-- 注意：`https://devdata2.huaweicloud.com/index/islogin` 为**暂定地址**，实际以部署为准
+- 默认地址：`https://devdata2.huaweicloud.com/index/islogin`（DGW islogin 接口）
 
 ```python
 resp = session.get(ISLOGIN_URL)          # 无 ticket
@@ -181,10 +181,10 @@ session.cookies.clear()          # 会话内再清空一次，确保状态干净
 
 ## Config Placeholder
 
-**接口地址均为参数/常量，按实际部署替换**（注意 `devdata2` 路径为暂定）：
+**接口地址均为参数/常量，可按实际部署调整（默认如下）**：
 
 ```python
-ISLOGIN_URL  = "https://devdata2.huaweicloud.com/index/islogin"      # 暂定
+ISLOGIN_URL  = "https://devdata2.huaweicloud.com/index/islogin"      # 默认
 LOGIN_URL    = "https://auth.huaweicloud.com/authui/login.html"     # IAM 登录页
 LOGOUT_URL   = "https://auth.ulanqab.huawei.com/authui/logout"      # 登出
 CALLBACK_URL = "https://developer.huaweicloud.com"                  # service 回调
@@ -194,7 +194,7 @@ CALLBACK_URL = "https://developer.huaweicloud.com"                  # service �
 
 | 参数 | 必/选 | 说明 | 示例 |
 |------|-------|------|------|
-| `ISLOGIN_URL` | 必 | DGW islogin 接口（**暂定占位**） | `https://devdata2.huaweicloud.com/index/islogin` |
+| `ISLOGIN_URL` | 必 | DGW islogin 接口（**默认地址**） | `https://devdata2.huaweicloud.com/index/islogin` |
 | `service` / `callback` | 必 | 登录回调地址 | `https://developer.huaweicloud.com` |
 | `locale` | 选 | 语言参数 | `zh-cn` |
 | `LOGIN_URL` | 必 | IAM 登录页（**第三方**，脚本仅构造跳转 URL，不处理表单） | `https://auth.huaweicloud.com/authui/login.html` |
