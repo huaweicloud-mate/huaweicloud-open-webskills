@@ -1,13 +1,13 @@
 ---
 name: huawei-cloud-web-login
-description: 华为云开发者平台登录/登出集成规范：程序化实现 IAM SSO 登录流程、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理。当需要实现华为云开发者平台登录/登出、判断登录状态、处理 SSO 跳转与会话 cookie 时使用，触发关键词：华为云登录、huawei cloud login、IAM登录、islogin、ticket换token、SSOJTC、登录状态判断、退出登录。
+description: 华为云平台登录/登出集成规范：程序化实现 IAM SSO 登录流程、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理。当需要实现华为云平台登录/登出、判断登录状态、处理 SSO 跳转与会话 cookie 时使用，触发关键词：华为云登录、huawei cloud login、IAM登录、islogin、ticket换token、SSOJTC、登录状态判断、退出登录。
 ---
 
 # 华为云登录 (Huawei Cloud Login)
 
 ## Overview
 
-程序化实现华为云开发者平台（Developer Portal）的登录/登出全流程。核心是基于
+程序化实现华为云平台（Huawei Cloud）的登录/登出全流程。核心是基于
 **Cookie/Session 会话**的纯 HTTP 请求，而非浏览器自动化。登录状态由浏览会话中
 持久化的 **token Cookie** 判定：有 token 即已登录，无 token / islogin 返回空即未登录。
 
@@ -19,7 +19,7 @@ token cookie 完成登录`。
 
 触发场景：
 
-- 需要程序化登录/登出华为云开发者平台
+- 需要程序化登录/登出华为云平台
 - 需要先判断当前 session 是否已登录（islogin）
 - 需要完成 IAM SSO 登录 + ticket 换 token 的完整流程
 - 需要管理 SSOJTC / token 相关 cookie

@@ -1,4 +1,4 @@
 interface:
   display_name: "登录集成 Skill"
-  short_description: "华为云开发者平台登录/登出集成：IAM SSO、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理"
-  default_prompt: "使用 $huawei-cloud-web-login 实现华为云开发者平台登录流程"
+  short_description: "华为云平台登录/登出集成：IAM SSO、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理"
+  default_prompt: "使用 $huawei-cloud-web-login 实现华为云平台登录流程"
