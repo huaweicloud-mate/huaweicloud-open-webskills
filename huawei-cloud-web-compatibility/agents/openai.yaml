@@ -1,4 +1,4 @@
 interface:
   display_name: "浏览器兼容 Skill"
-  short_description: "主流浏览器兼容适配：Chrome/Edge/Firefox/Safari 支持矩阵、特性检测、CSS/JS 降级与测试方法"
-  default_prompt: "使用 $huawei-cloud-web-compatibility 检查这个页面在主流浏览器中的兼容性"
+  short_description: "主流浏览器兼容适配：Chrome/Firefox/Safari/Edge/国产浏览器支持矩阵（L1-L3 + A/B/C）、分辨率适配原则、CSS/JS 降级与测试方法"
+  default_prompt: "使用 $huawei-cloud-web-compatibility 检查这个页面在主流浏览器中的兼容性和分辨率适配"
