@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vue3 代码规范 Skill"
+  short_description: "Vue3 组件与代码规范：SFC 结构、命名、props/emits、单向数据流、TS 类型、模板样式规范与评审清单"
+  default_prompt: "使用 $huawei-cloud-web-code-style 审查这个 Vue3 组件"

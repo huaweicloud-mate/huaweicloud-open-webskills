@@ -1,0 +1,4 @@
+interface:
+  display_name: "性能优化 Skill"
+  short_description: "Web 性能优化规范：Core Web Vitals 指标、图片/字体/JS/CSS、缓存 CDN、渲染交互与监控采集"
+  default_prompt: "使用 $huawei-cloud-web-performance 优化这个页面的加载性能"

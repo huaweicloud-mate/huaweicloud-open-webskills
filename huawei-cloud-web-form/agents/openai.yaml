@@ -1,0 +1,4 @@
+interface:
+  display_name: "表单开发 Skill"
+  short_description: "推广网页表单的字段设计、校验规则、提交流程与埋点规范"
+  default_prompt: "使用 $huawei-cloud-web-form 为这个推广页实现一个报名表单"

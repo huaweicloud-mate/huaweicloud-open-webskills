@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>活动报名</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <h1 class="card__title">立即报名</h1>
+      <p class="card__desc">填写信息，我们将尽快与您联系。</p>
+
+      <form id="signup-form" class="form" novalidate>
+        <div class="field">
+          <label class="field__label" for="name">姓名 <span class="field__required">*</span></label>
+          <input class="field__input" id="name" name="name" type="text" maxlength="50" required autocomplete="name" aria-describedby="name-error">
+          <p class="field__error" id="name-error" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="phone">手机号 <span class="field__required">*</span></label>
+          <input class="field__input" id="phone" name="phone" type="tel" maxlength="11" required autocomplete="tel" inputmode="numeric" aria-describedby="phone-error">
+          <p class="field__error" id="phone-error" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="wechat">微信号</label>
+          <input class="field__input" id="wechat" name="wechat" type="text" maxlength="20" aria-describedby="wechat-error">
+          <p class="field__error" id="wechat-error" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="message">需求描述</label>
+          <textarea class="field__input" id="message" name="message" rows="3" maxlength="500" aria-describedby="message-error"></textarea>
+          <p class="field__error" id="message-error" role="alert"></p>
+        </div>
+
+        <!-- 蜜罐字段：人类不可见，机器人填写后提交会被静默丢弃 -->
+        <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <label class="consent">
+          <input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error">
+          <span>我已阅读并同意 <a href="/privacy" target="_blank" rel="noopener">《隐私政策》</a></span>
+        </label>
+        <p class="field__error" id="consent-error" role="alert"></p>
+
+        <button class="btn" id="submit-btn" type="submit">立即报名</button>
+        <p class="form__status" id="form-status" role="status"></p>
+      </form>
+    </section>
+  </main>
+  <script src="form.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vue3 响应式布局 Skill"
+  short_description: "Vue3 响应式布局规范：断点体系、PC 多尺寸与主流手机机型适配、Grid/Flex/容器查询与 useViewport"
+  default_prompt: "使用 $huawei-cloud-web-responsive-layout 为这个 Vue3 页面实现响应式布局"
