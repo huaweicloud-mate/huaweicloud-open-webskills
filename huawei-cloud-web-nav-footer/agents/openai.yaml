@@ -1,0 +1,4 @@
+interface:
+  display_name: "华为云页头 NavBar 与页尾 Footer 组件"
+  short_description: "HDSkillPortal 风格的 Vue3 页头导航与页尾，即插即用"
+  default_prompt: "使用 $huawei-cloud-web-nav-footer 为我的 Vue 3 项目添加华为云风格页头导航与页尾"
