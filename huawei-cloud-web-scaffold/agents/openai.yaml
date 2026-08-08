@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目脚手架 Skill"
+  short_description: "Vue3 + TS + Vite + Opentiny + Pinia 项目初始化：目录结构、配置、环境变量、路由、store、i18n、工具函数"
+  default_prompt: "使用 $huawei-cloud-web-scaffold 初始化一个 Vue3 前端项目"

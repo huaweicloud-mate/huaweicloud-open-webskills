@@ -7,6 +7,7 @@
 | 技能 | 说明 |
 | --- | --- |
 | huawei-cloud-web-form | 推广网页表单开发：字段校验、提交流程、防刷、埋点，含原生与 Vue3 模板 |
+| huawei-cloud-web-scaffold | Vue3 + TS + Vite + Opentiny + Pinia 项目初始化：目录结构、vite/tsconfig 配置、环境变量、路由、store、i18n、工具函数 |
 | huawei-cloud-web-responsive-layout | Vue3 响应式布局：断点体系、PC 多尺寸与主流手机机型适配、useViewport |
 | huawei-cloud-web-compatibility | 浏览器兼容：Chrome/Edge/Firefox/Safari 支持矩阵、特性检测、降级写法 |
 | huawei-cloud-web-performance | Web 性能优化：Core Web Vitals、资源优化、缓存 CDN、vitals 采集器 |
