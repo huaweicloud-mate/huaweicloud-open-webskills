@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-login
-description: Use when needing to log into or log out of Huawei Cloud (华为云) programmatically, implement the IAM SSO login flow, check login status via the DGW islogin interface, exchange a ticket for a token on the Huawei Cloud developer portal, or manage the SSOJTC/token cookies. Triggered by keywords like "华为云登录", "huawei cloud login", "IAM登录", "islogin", "ticket换token", "SSOJTC", "登录状态判断", "退出登录".
+description: 华为云开发者平台登录/登出集成规范：程序化实现 IAM SSO 登录流程、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理。当需要实现华为云开发者平台登录/登出、判断登录状态、处理 SSO 跳转与会话 cookie 时使用，触发关键词：华为云登录、huawei cloud login、IAM登录、islogin、ticket换token、SSOJTC、登录状态判断、退出登录。
 ---
 
 # 华为云登录 (Huawei Cloud Login)
