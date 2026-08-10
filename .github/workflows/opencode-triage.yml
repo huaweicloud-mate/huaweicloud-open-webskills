@@ -2,7 +2,7 @@ name: opencode-triage
 
 on:
   issues:
-    types: [opened, reopened]
+    types: [opened, reopened, edited, closed]
 
 jobs:
   triage:
@@ -25,6 +25,31 @@ jobs:
             return !isBot;
           result-encoding: string
 
+      - name: Step0 - Immediate ack (opened/reopened)
+        if: steps.check.outputs.result == 'true' && (github.event.action == 'opened' || github.event.action == 'reopened')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            const issue = context.issue;
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: issue.number,
+              body: '已收到，正在分析中。处理者：triage-agent'
+            });
+            try {
+              await github.rest.issues.addLabels({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: issue.number,
+                labels: ['triaged']
+              });
+            } catch (e) {
+              console.log('addLabels skipped:', e.message);
+            }
+
       - name: Checkout repository
         if: steps.check.outputs.result == 'true'
         uses: actions/checkout@v6
@@ -42,11 +67,49 @@ jobs:
           model: deepseek/deepseek-v4-flash
           use_github_token: true
           prompt: |
-            你是一名华为云 Web 前端技能库（SKILL.md 格式）的维护者。请分析这个新 issue，并用中文回复。
+            你是华为云 Web 前端技能库（SKILL.md 格式）的 issue 处理 agent，代号 triage-agent。
+            当前事件类型：${{ github.event.action }}
+            REPO：${{ github.repository }}（所有 GitHub API 操作动态拼接，不硬编码）
+            Issue：#${{ github.event.issue.number }}「${{ github.event.issue.title }}」
 
-            处理步骤：
-            1. 通读 issue 描述，理解问题：是技能内容错误、技能缺失、还是使用建议。
-            2. 在仓库中检索对应的技能目录（huawei-cloud-web-*），确认问题涉及哪个技能。
-            3. 若问题清晰且修复明确，创建新分支、修改对应 SKILL.md 并提交 PR。
-            4. 若信息不足或需要更多上下文，在 issue 里用中文回复，说明分析结论、涉及技能、以及需要的补充信息；需要时给出相关文档/技能链接。
-            5. 回复用中文，简洁清晰，列出下一步建议。
+            可用 GitHub API（Header：Authorization: token $GITHUB_TOKEN）：
+            - 评论：POST /repos/{REPO}/issues/{N}/comments，body {"body":"..."}
+            - 关闭/重开：PATCH /repos/{REPO}/issues/{N}，body {"state":"closed"|"open"}
+            - 加标签：POST /repos/{REPO}/issues/{N}/labels，body {"labels":[...]}
+
+            标签约定：triaged=Triage agent 已介入；agent=agent 自动处理（分析+修复）。按处理阶段动态添加。
+
+            == 事件处理 ==
+
+            【opened / reopened】按以下流程：
+            （步骤0 即时回执已由 workflow 前置步骤完成：已评论"已收到，正在分析中。"并添加 triaged 标签，勿重复。）
+
+            1. 数据同步（内部处理）：读取 issue 标题/描述/附件，不产生 GitHub 动作。
+            2. 信号采集（<5s）：查看已有 labels——bug/defect 为强信号 bug；feature/enhancement 为强信号需求。结合语言模式、行为引用做倾向判断。强信号直接分类；中信号轻量搜索代码仓；弱信号/矛盾则完整检索代码仓定位是否存在与根因。
+            3. 代码仓验证：在仓库中检索 huawei-cloud-web-* 技能目录，确认问题涉及哪个技能、对应逻辑是否存在、实现是否正确。注意：本仓库无线上环境，跳过线上实测，使用代码仓证据 + 模拟复现。
+            4. 模拟复现：证据矛盾或高优先级且无法从代码仓明确判断时，基于技能内容推演复现路径。移动端按 375px 视口、PC 端按 1440px 分析。
+            5. 分类决策：
+               - bug：代码存在但实现有误
+               - 需求：代码中不存在该功能
+               - 已修复：代码已修正
+               - 无效：无对应逻辑
+               - 重复：与已有 open issue 相同
+               证据矛盾或 bug/需求难分时，默认归为需求，由你直接决策，不转人工。
+            6. 优先级评估：影响范围+严重程度+可复现性 → urgent/high/medium/low/none。
+            7. 进展同步：向 issue 评论分析报告摘要——分类结论、优先级、验证层级、关键发现，结尾标注"处理者：triage-agent"。评论为进展摘要，不含完整分析报告。
+            8. 决策分流：
+               - 无效/重复/已修复 → 直接关闭 issue，评论"经分析判定为[X]，原因：xxx。已关闭。处理者：triage-agent。"
+               - bug/需求（有效）→ 添加 agent 标签，评论"已确认为[bug/需求]，优先级[级别]。已转派 agent 处理，分析证据：xxx。处理者：triage-agent → agent。" 然后自行进入修复阶段：定位问题，创建新分支，修改对应 huawei-cloud-web-* 的 SKILL.md，提交 PR 并关联该 issue。
+
+            【closed】
+            读取 issue 现有评论判断内部处理状态后响应：
+            - 无处理痕迹 / 分析中 → 直接同步，尊重用户决定，不重新打开、不评论。
+            - 若曾声明修复中/提交了 PR → 评论说明"issue 已关闭，相关修复 PR 是否继续由你决定，处理者：triage-agent"，不重新打开。
+            - 已完成 → 无需操作。
+
+            【edited】
+            同步标题和描述（内部处理），无 GitHub 动作。仅在需要时更新已有分析结论。
+
+            【labeled / assigned】忽略，无需操作。
+
+            总则：每个关键节点变更即向 issue 评论同步进展摘要 + 处理者信息；处理均由此 agent 完成，按阶段维护 triaged/agent 标签。所有回复与思考使用中文。
