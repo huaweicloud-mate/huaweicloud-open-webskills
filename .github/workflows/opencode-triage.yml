@@ -57,6 +57,17 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      - name: Configure git credentials
+        if: steps.check.outputs.result == 'true'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global credential.helper store
+          printf 'https://x-access-token:%s@github.com\n' "$GITHUB_TOKEN" > "$HOME/.git-credentials"
+
       - name: Run OpenCode
         if: steps.check.outputs.result == 'true'
         uses: anomalyco/opencode/github@latest
