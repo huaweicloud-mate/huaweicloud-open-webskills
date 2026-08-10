@@ -64,7 +64,7 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.WORKDEEPSEEK }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          model: deepseek-v4-flash
+          model: deepseek/deepseek-v4-flash
           use_github_token: true
           prompt: |
             你是华为云 Web 前端技能库（SKILL.md 格式）的 issue 处理 agent，代号 triage-agent。
