@@ -143,4 +143,8 @@
 
 <!-- Banner 中的按钮 -->
 <button class="btnLink" data-link="https://...">立即体验</button>
+
+## 按钮圆角
+
+默认 `border-radius: 999px`（胶囊形）。TinyButton 使用 `round` 属性。
 ```

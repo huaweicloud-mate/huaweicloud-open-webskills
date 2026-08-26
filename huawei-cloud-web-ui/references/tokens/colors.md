@@ -25,7 +25,7 @@ HWC 官网以灰阶为主色调，几乎全部界面都基于以下灰阶：
 
 | Token 名称 | 色值 | 用途 |
 |------------|------|------|
-| `--por-base-color-red-huawei` | `#C7000B` | HWC 品牌红，CTA 按钮、链接高亮 |
+| `--por-base-color-red-huawei` | `#191919` | HWC 品牌深色，CTA 按钮、链接高亮 |
 | `--por-base-color-brand` | `var(--por-base-color-gray-90)` 即 `#191919` | 主品牌色（深灰） |
 | `--por-base-color-brand-2` | `var(--por-base-color-blue-50)` 即 `#1476FF` | 辅品牌色（蓝色） |
 
@@ -37,10 +37,10 @@ HWC 官网以灰阶为主色调，几乎全部界面都基于以下灰阶：
 .btn-red:hover { background: #d64a52; border-color: #d64a52; box-shadow: 0 8px 6px -4px rgba(246, 111, 106, 0.5); }
 
 /* 文字链接高亮 */
-color: #c7000b;  /* hover 状态 */
+color: #191919;  /* hover 状态 */
 
 /* 消息徽标 */
-background-color: #c7000b;
+background-color: #191919;
 ```
 
 ## 功能色
