@@ -51,6 +51,10 @@ description: 华为云官网 UI 设计规范 Skill，生成符合华为云官网
 | 后台管理页 | 简单的管理界面 | 控制台页面、数据看板 |
 | 表单页面 | 符合设计规范的表单 | 注册页、配置页 |
 
+### 可选模式：登录模式页头（自研页头）
+
+自研页头（不使用官方 `<hd-header>` 动态组件）时，页头右侧登录区可选接入「登录模式页头」：PC 端为登录链接 / 用户名下拉面板；移动端（≤768px）对齐 developer.huaweicloud.com/grow 页 `header-tools` 官方效果——未登录显示人形图标并展开全宽面板（账号中心 / 开放能力 / 注册+登录胶囊按钮），已登录显示圆形头像并展开全宽面板（账号中心 / 开放能力 / 用户名+退出登录）。完整交互规格、尺寸与踩坑记录见 [登录模式页头](references/components/header-login.md)。使用官方 `<hd-header>` 时无需接入。
+
 ## 文件结构
 
 ```
@@ -66,6 +70,7 @@ huawei-cloud-web-ui/
     │   ├── buttons.md          # 按钮组件
     │   ├── cards.md            # 卡片组件
     │   ├── navigation.md       # 导航/页头
+    │   ├── header-login.md     # 登录模式页头（自研页头可选模式，PC + 移动端登录区）
     │   ├── banner.md           # Banner 轮播
     │   ├── footer.md           # 页脚
     │   ├── modal.md            # 弹窗
@@ -261,6 +266,7 @@ A: 遵循以下实践：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 1.1.0 | 2026-09-10 | 新增可选模式「登录模式页头」（references/components/header-login.md）：自研页头场景下 PC + 移动端登录区规范（登录链接/用户名下拉/移动端全宽面板/注册登录胶囊按钮），移动端交互对齐 developer.huaweicloud.com/grow 页 header-tools 官方效果；附滚动条宽度补偿（--hc-sbw）与 TinyVue 表单校验 validate-type 踩坑记录 |
 | 1.0.0 | 2024-04-27 | 初始版本，提取华为云官网 UI 设计规范 |
 
 ## 参考文档
@@ -274,6 +280,7 @@ A: 遵循以下实践：
 | [按钮组件](references/components/buttons.md) | 按钮尺寸、类型、状态、HTML 模板 |
 | [卡片组件](references/components/cards.md) | 卡片类型、样式、布局 |
 | [导航组件](references/components/navigation.md) | 页头、导航栏、面包屑 |
+| [登录模式页头](references/components/header-login.md) | 自研页头可选模式：PC + 移动端登录区（登录/用户菜单/全宽面板） |
 | [Banner 组件](references/components/banner.md) | Hero Banner、轮播图 |
 | [页脚组件](references/components/footer.md) | 页脚布局、链接 |
 | [弹窗组件](references/components/modal.md) | 模态框、对话框 |
