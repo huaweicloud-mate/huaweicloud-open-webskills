@@ -137,7 +137,21 @@
    ```
 4. **双 UL 结构**：桌面登录区与移动端登录区分成两个 `<ul>` 渲染（面板结构差异大），用媒体查询互斥显隐（桌面 `@media (min-width: 769px)` 隐藏移动 UL，移动 `@media (max-width: 768px)` 隐藏桌面 UL）。
 5. **外部点击关闭**：`document` click 监听中用 `closest('.header-user') || closest('.header-login-mobile')` 判断，两个触发器都要豁免；触发器自身 `@click.stop`。
-6. **TinyVue 表单校验提示**：提示展示方式由 `validate-type` 控制（不是 `message-type`）；移动端用 `validate-type="text"` 渲染输入框下方块级文字（`tiny-form-item__error`），并用 CSS 隐藏遮挡输入框的气泡：
+6. **下拉面板 hover 链路（悬停桥）**：桌面面板与触发器之间若有间隙（如 `top: calc(100% + 4px)` 的 4px），鼠标从用户名移向面板途中会经过空隙触发 `mouseleave`，面板在鼠标到达前就隐藏。需给面板加透明桥接伪元素覆盖空隙，保持 hover 链路连续：
+
+   ```css
+   .header-user-info::before {
+     content: '';
+     position: absolute;
+     top: -8px;
+     left: 0;
+     right: 0;
+     height: 8px;
+   }
+   ```
+
+   面板隐藏（`display: none`）时伪元素不渲染，不会挡住面板下方区域的点击。
+7. **TinyVue 表单校验提示**：提示展示方式由 `validate-type` 控制（不是 `message-type`）；移动端用 `validate-type="text"` 渲染输入框下方块级文字（`tiny-form-item__error`），并用 CSS 隐藏遮挡输入框的气泡：
 
    ```css
    @media (max-width: 768px) {
