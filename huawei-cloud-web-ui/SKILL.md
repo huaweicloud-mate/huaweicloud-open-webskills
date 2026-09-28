@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-ui
-description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
+description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
 ---
 
 # 华为云官网 UI 设计规范 Skill
@@ -53,15 +53,15 @@ description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm
 
 | 场景 | 说明 | 示例 |
 |------|------|------|
-| 开发者官网页面 | 生成符合开发者站视觉规范的页面 | 技术文档页、API 文档页 |
+| 开发者官网页面 | 生成符合开发者站视觉规范的页面（**默认接入公共开发者页头 `<hd-header>`**） | 技术文档页、API 文档页 |
 | 产品介绍页 | 华为云产品展示页面 | 产品特性页、价格页 |
 | 营销落地页 | 符合品牌调性的营销页面 | 活动页、专题页 |
 | 后台管理页 | 简单的管理界面 | 控制台页面、数据看板 |
 | 表单页面 | 符合设计规范的表单 | 注册页、配置页 |
 
-### 页头接入：优先公共开发者页头
+### 页头接入：开发者官网场景默认接入公共页头
 
-开发者站页面**优先接入华为云开发者公共页头** `<hd-header>` 动态组件（含站点信息栏 / 主导航 / 用户菜单，页脚自动生成）：`<head>` 内按固定顺序加载 baseui(2.8.11) → jQuery → `developer-preload-header.js?url=…hwcheader2026.html` → `window.developerHeaderUrl`（与 `?url=` 同 URL）→ `developer-pep2-template.js`，`<body>` 内放置 `<hd-header></hd-header>`。完整顺序、双通道约束与登录/登出链接兜底见 [导航 / 页头](references/components/navigation.md)。
+**开发者官网（developer.huaweicloud.com）场景页面默认接入**华为云开发者公共页头 `<hd-header>` 动态组件（含站点信息栏 / 主导航 / 用户菜单，页脚自动生成）：`<head>` 内按固定顺序加载 baseui(2.8.11) → jQuery → `developer-preload-header.js?url=…hwcheader2026.html` → `window.developerHeaderUrl`（与 `?url=` 同 URL）→ `developer-pep2-template.js`，`<body>` 内放置 `<hd-header></hd-header>`。完整顺序、双通道约束与登录/登出链接兜底见 [导航 / 页头](references/components/navigation.md)。
 
 ### 备选模式：登录模式页头（自研页头）
 
@@ -108,7 +108,7 @@ huawei-cloud-web-ui/
     │   ├── cards.md            # 卡片
     │   ├── service-table.md    # 支持与服务风格表格
     │   ├── fixed-table.md      # 固定表头表格
-    │   ├── navigation.md       # 导航 / 页头（优先公共开发者页头 <hd-header> 接入）
+    │   ├── navigation.md       # 导航 / 页头（开发者官网场景默认接入公共页头 <hd-header>）
     │   ├── header-login.md     # 登录模式页头（备选自研页头，PC + 移动端登录区）
     │   ├── banner.md           # Banner 轮播
     │   └── footer.md           # 页脚
@@ -132,6 +132,7 @@ huawei-cloud-web-ui/
 5. 参考 `references/examples/` 中的示例代码生成完整页面
 6. 所有样式使用 CSS 变量（`var(--por-xxx)`）确保与官网设计系统一致
 7. 涉及交互的组件（轮播、页签、折叠、弹窗等）需引入 `theme-token.js` 并调用对应 jQuery 初始化方法
+8. **开发者官网（developer.huaweicloud.com）场景页面：默认接入公共开发者页头 `<hd-header>`**（顺序与兜底见 [导航 / 页头](references/components/navigation.md)），不要自研页头；仅在无法接入公共页头时才退回 [登录模式页头](references/components/header-login.md)
 
 ### 2. 快速开始
 
@@ -306,6 +307,7 @@ A: 遵循以下实践：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.2.2 | 2026-09-28 | 明确**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**：统一 SKILL（描述/使用场景/使用指南/文件结构/参考文档）、navigation.md 接入策略、header-login.md 措辞为「默认接入」，自研页头为备选 |
 | 2.2.1 | 2026-09-28 | 全量校对（比对 cnpm-baseui 3.0.17 实际 CSS）：移除不存在的类名 `por-native`/`por-tips`/`por-modal-text`/`por-anchor-slide`/`por-rate` 及虚构组件「图片查看器」(img-viewer.md)；标注 banner 轮播的开发者站自定义类；修正 `#1476ff`、`zindex-fixed` Token、卡片圆角 `2px`、default 按钮 padding、`textOverflow` 作用域；`page-structure.md`/`examples` 开发者站模板改接公共页头；统一 desktop-first 表述 |
 | 2.2.0 | 2026-09-28 | ① 页头改为**优先接入华为云开发者公共页头** `<hd-header>`（navigation.md 重写：head 固定加载顺序、`?url=`/`window.developerHeaderUrl` 双通道同 URL、登录/登出链接轮询兜底），自研页头降为备选（header-login.md）；② 修正按钮圆角：`cnpm-baseui@3.0.17` 起 `.por-btn` 默认为**胶囊圆角**（半径 = 高度 24/32/40/48px，`--por-button-size-radius-*`），旧文档 `2px` 有误（buttons.md / shadows-radii.md / SKILL.md） |
 | 2.1.0 | 2026-09-10 | 新增可选模式「登录模式页头」（references/components/header-login.md）：自研页头场景下 PC + 移动端登录区规范（登录链接/用户名下拉/移动端全宽面板/注册登录胶囊按钮），移动端交互对齐 developer.huaweicloud.com/grow 页 header-tools 官方效果；附滚动条宽度补偿（--hc-sbw）与 TinyVue 表单校验 validate-type 踩坑记录 |
@@ -349,7 +351,7 @@ A: 遵循以下实践：
 | [卡片组件](references/components/cards.md) | 卡片类型、样式、布局 |
 | [服务表格](references/components/service-table.md) | 支持与服务风格表格 |
 | [固定表头表格](references/components/fixed-table.md) | 常规表格 |
-| [导航 / 页头](references/components/navigation.md) | 优先公共开发者页头 `<hd-header>`（加载顺序/双通道/登录链接兜底），自研页头为备选 |
+| [导航 / 页头](references/components/navigation.md) | 开发者官网场景默认接入公共页头 `<hd-header>`（加载顺序/双通道/登录链接兜底），自研页头为备选 |
 | [登录模式页头](references/components/header-login.md) | 备选自研页头：PC + 移动端登录区（登录/用户菜单/全宽面板） |
 | [Banner 组件](references/components/banner.md) | Hero Banner、轮播图 |
 | [页脚组件](references/components/footer.md) | 页脚布局、链接 |

@@ -14,7 +14,7 @@
 | huawei-cloud-web-login | 华为云平台登录/登出集成：IAM SSO 登录流程、islogin 登录态判断、ticket 换 token、SSOJTC/token cookie 管理 |
 | huawei-cloud-web-code-style | Vue3 组件与代码规范：SFC 结构、命名、props/emits、TS 类型、评审清单 |
 | huawei-cloud-web-nav-footer | 华为云风格页头 NavBar 与页尾 Footer：黑色中国站顶栏、白色吸顶导航、移动端汉堡菜单、营销页尾，Vue3 组件即插即用 |
-| huawei-cloud-web-ui | 华为云官网 UI 设计规范（cnpm-baseui 3.0.17）：设计 Token（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉/单选复选/日期/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局（楼层/栅格）、页头接入（优先公共 `<hd-header>`）、XTemplate 与完整示例 |
+| huawei-cloud-web-ui | 华为云官网 UI 设计规范（cnpm-baseui 3.0.17）：设计 Token（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉/单选复选/日期/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局（楼层/栅格）、页头接入（开发者官网场景默认接入公共 `<hd-header>`）、XTemplate 与完整示例 |
 
 ## 安装
 
