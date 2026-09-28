@@ -1,20 +1,70 @@
-# 导航/页头
+# 导航 / 页头
 
-来源：HTML 结构分析
+来源：华为云开发者公共页头实测（developer.huaweicloud.com）
 
-## 页头结构
+## 接入策略（优先公共开发者页头）
 
-两个站点共用统一的页头组件 `<hd-header>`，通过 JS 动态加载：
+开发者站页面**优先接入华为云开发者公共页头**（`<hd-header>` 动态组件，含站点信息栏 / 主导航 / 用户菜单，页脚自动生成），保证导航结构、登录态、多语言与官网一致；**仅当无法接入公共页头时**才退回自研页头。
+
+| 方案 | 适用场景 | 说明 |
+|------|---------|------|
+| ✅ 公共开发者页头 `<hd-header>` | 部署在 developer.huaweicloud.com 或其子路径下的页面 | 本文「公共页头接入」 |
+| ⚠️ 自研页头（备选） | 独立域名、无法加载官方脚本、需高度定制 | [登录模式页头](header-login.md) |
+
+## 公共页头接入（推荐）
+
+### 1. `<head>` 内按固定顺序加载（顺序不可调换）
 
 ```html
-<!-- 页头由外部脚本渲染 -->
-<hd-header></hd-header>
-
-<!-- 加载脚本 -->
-<script src="https://developer.huaweicloud.com/portal-res-static/developer-preload-header.js?url=https://developer.huaweicloud.com/common/hwcheader2023.html"></script>
+<!-- ① 基础组件样式（公共页头依赖 cnpm-baseui，此处固定为 2.8.11） -->
+<link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/2.8.11/index.css?sttl=202202241920" />
+<!-- ② jQuery -->
+<script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/jquery.min.js?sttl=1.0.77&ttr=1.0.5"></script>
+<!-- ③ 页头预取脚本：?url= 指向页头 fragment -->
+<script src="https://developer.huaweicloud.com/portal-res-static/developer-preload-header.js?url=https://developer.huaweicloud.com/common/hwcheader2026.html"></script>
+<!-- ④ 双通道之二：与 ③ 的 ?url= 必须完全一致 -->
+<script>window.developerHeaderUrl = 'https://developer.huaweicloud.com/common/hwcheader2026.html';</script>
+<!-- ⑤ 模板脚本：渲染页头，并在页尾自动 append 页脚 -->
+<script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/developer-pep2-template.js"></script>
 ```
 
-## 主站页头
+### 2. `<body>` 内放置挂载点
+
+```html
+<body>
+  <hd-header></hd-header>
+  <!-- 页脚由 developer-pep2-template.js 自动 append 到 body，无需手动放置 -->
+  <div id="app"></div>
+</body>
+```
+
+### 关键约束（踩坑记录）
+
+1. **双通道 URL 必须一致**：`developer-preload-header.js?url=` 与 `window.developerHeaderUrl` 必须指向同一 fragment，否则页头空白或重复加载。
+2. **fragment 名随版本演进**（`hwcheader2023.html` → `hwcheader2026.html` …），以官方当前线上为准，勿沿用旧名。
+3. **登录/登出链接兜底**：`developer-pep2-template.js` 加载后约 1s 用 jQuery 给页头登录/登出链接赋 `href`；当页头内容是异步注入、晚于该时刻时链接无 `href`、点击无响应，需自行轮询补齐（见下）。
+4. **自研页头需隐藏**：接入公共页头后，隐藏/移除自研 `SiteHeader`/`SiteFooter`，避免出现两个页头；组件代码可保留以备回退。
+5. **旧版 baseui 副作用**：公共页头引入 `cnpm-baseui@2.8.11`，其 `.por-btn` 为 `2px` 直角（≠ 3.0.17 的胶囊），且 `.btn` 等类名会污染全局样式，需做作用域收口。
+
+### 登录/登出链接兜底
+
+```js
+const logoutHref = `${LOGOUT_URL}?service=${encodeURIComponent(location.href)}`
+const loginHref = `${LOGIN_URL}?service=${encodeURIComponent(location.href)}&locale=zh-cn`
+let tries = 0
+const timer = setInterval(() => {
+  tries++
+  document.querySelectorAll('.header-user-info .account-nav .logout a.logout-btn, #login-out')
+    .forEach((a) => { const c = a.getAttribute('href'); if (!c || c.includes('undefined')) a.setAttribute('href', logoutHref) })
+  document.querySelectorAll('.header-login .js-login')
+    .forEach((a) => { const c = a.getAttribute('href'); if (!c || !c.startsWith('http')) a.setAttribute('href', loginHref) })
+  if (tries >= 20) clearInterval(timer)   // ≤10s 后停止
+}, 500)
+```
+
+> 登录态判定用 `fetchUserInfo()`：返回含 `username` 即视为已登录。详见 [登录模式页头](header-login.md)。
+
+## 主站（huaweicloud.com）页头
 
 ```html
 <!-- CSS 引入 -->
@@ -97,9 +147,9 @@ transition: .5s;
 transform: rotateX(180deg);
 ```
 
-## 简化页头 HTML 模板
+## 备选：自研简化页头模板
 
-当无法使用官方页头组件时，可用以下模板：
+当无法接入公共页头时，可用以下模板（右侧登录区见 [登录模式页头](header-login.md)）：
 
 ```html
 <header id="header">

@@ -14,14 +14,16 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
   <title>页面标题_HWC</title>
 
-  <!-- 设计 Token（必须） -->
-  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/3.0.6/theme-token.css">
+  <!-- 公共开发者页头依赖（顺序固定，见 components/navigation.md）：
+       baseui(2.8.11) → jQuery → 预取 → window.developerHeaderUrl（与 ?url= 同 URL）→ 模板脚本 -->
+  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/2.8.11/index.css?sttl=202202241920">
+  <script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/jquery.min.js?sttl=1.0.77&ttr=1.0.5"></script>
+  <script src="https://developer.huaweicloud.com/portal-res-static/developer-preload-header.js?url=https://developer.huaweicloud.com/common/hwcheader2026.html"></script>
+  <script>window.developerHeaderUrl = 'https://developer.huaweicloud.com/common/hwcheader2026.html';</script>
+  <script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/developer-pep2-template.js"></script>
 
   <!-- 主站全局样式 -->
   <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-global-resources/1.2.9/css/global.min.css">
-
-  <!-- 页头页脚样式 -->
-  <link rel="stylesheet" href="https://portal.hc-cdn.com/cpage-pep-header-and-footer-china/2.0.50/index.css">
 
   <!-- 开发者站特有样式 -->
   <link rel="stylesheet" href="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/css/global.css">
@@ -31,7 +33,7 @@
 </head>
 <body>
 
-  <!-- 页头 -->
+  <!-- 页头（页脚由 developer-pep2-template.js 自动 append，无需手写） -->
   <hd-header></hd-header>
 
   <!-- 主内容区 -->
@@ -42,23 +44,23 @@
       <!-- 轮播组件 -->
     </section>
 
-    <!-- 内容区块 1（白色背景） -->
+    <!-- 内容区块 1（白色背景楼层） -->
     <div class="por-section">
       <div class="por-container">
-        <!-- 区块标题 -->
-        <div class="section-header">
-          <h2 class="section-title">区块标题</h2>
-          <p class="section-subtitle">区块副标题</p>
+        <!-- 楼层标题 -->
+        <div class="por-section-head">
+          <h3 class="por-section-title">区块标题</h3>
+          <div class="por-section-subtitle">区块副标题</div>
         </div>
         <!-- 区块内容 -->
-        <div class="section-body">
+        <div class="por-section-body">
           <!-- 内容 -->
         </div>
       </div>
     </div>
 
-    <!-- 内容区块 2（灰色背景） -->
-    <div class="por-section" style="background: #F5F5F5;">
+    <!-- 内容区块 2（灰色背景楼层） -->
+    <div class="por-section" data-bg="grey">
       <div class="por-container">
         <!-- ... -->
       </div>
@@ -66,14 +68,11 @@
 
   </div>
 
-  <!-- 页脚 -->
-  <div id="footer">
-    <!-- 页脚组件 -->
-  </div>
-
 </body>
 </html>
 ```
+
+> **版本说明**：公共页头自带 `cnpm-baseui@2.8.11`。若页面还要用 PortalUI `3.0.17` 的 `por-*` 组件，两者类名/取值存在差异（见 [导航 / 页头](../components/navigation.md) 踩坑 5），**不建议在接公共页头的页面上再引 3.0.17**；纯组件页面请参考下方「主站页面模板」（引 3.0.17 + 自研页头）。
 
 ## 主站页面模板
 
@@ -85,7 +84,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>页面标题_HWC</title>
 
-  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/3.0.6/theme-token.css">
+  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/3.0.17/theme-token.css">
   <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-global-resources/1.2.9/css/global.min.css">
   <link rel="stylesheet" href="https://portal.hc-cdn.com/cpage-pep-header-and-footer-china/2.0.50/index.css">
 

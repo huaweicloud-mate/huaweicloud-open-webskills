@@ -1,199 +1,117 @@
 # 弹窗组件
 
-来源：developer-common.css
+来源：Tiny PortalUI modal 规范
 
 ## 基础弹窗
 
 ```html
-<div class="developer-modal modal-cover">
-  <div class="modal-detail-block">
-    <!-- 关闭按钮 -->
-    <div class="icon-delete"></div>
-
-    <!-- 标题 -->
-    <div class="modal-title succeed">操作成功</div>
-
-    <!-- 内容 -->
-    <div class="warning-box">
-      <div class="msg-block">提示信息文字</div>
-      <div class="warning-detail">
-        <a href="#">详情链接</a>
-      </div>
+<div class="por-modal" data-hide="modal" id="demo-modal">
+    <div class="por-modal-dialog por-modal-dialog-small">
+        <div class="por-modal-inner">
+            <div class="por-modal-head">
+                <div class="por-modal-icon por-icon por-icon-success"></div>
+                <div class="por-modal-title">提交成功</div>
+            </div>
+            <div class="por-modal-body">内容文字内容文字内容文字</div>
+            <div class="por-modal-footer">
+                <a class="por-btn por-btn-primary" data-hide="modal">确定</a>
+                <a class="por-btn por-btn-dark" data-hide="modal">取消</a>
+            </div>
+        </div>
+        <div class="por-modal-close" data-hide="modal">
+            <i class="u-icon u-icon-cancel"></i>
+        </div>
     </div>
-
-    <!-- 按钮 -->
-    <div class="btn-block">
-      <button class="developer-btns btn-red">确定</button>
-      <button class="developer-btns btn-white">取消</button>
-    </div>
-  </div>
 </div>
+<button class="por-btn por-btn-dark" data-toggle="modal" data-target="#demo-modal">打开弹窗</button>
 ```
 
-## 样式
+## API 指导
 
-```css
-/* 遮罩层 */
-.modal-cover {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(2, 2, 2, 0.3);
-  z-index: 9999;
-  top: 0;
-  left: 0;
-  display: none;
-}
+### class/属性
 
-.modal-cover.show { display: block; }
+| class/属性 | 描述 |
+| --- | --- |
+| `por-modal` | 弹窗外层遮罩容器 |
+| `por-modal-dialog` | 每个弹窗必须的 class |
+| `por-modal-dialog-small` | 小弹窗 (400px) |
+| `por-modal-dialog-middle` | 中弹窗 (550px) |
+| `por-modal-dialog-large` | 大弹窗 (700px) |
+| `por-modal-dialog-xlarge` | 超大弹窗 (900px) |
+| `data-toggle="modal"` | 触发弹窗显示的按钮属性 |
+| `data-target` | 指定弹窗的选择器 |
+| `data-hide="modal"` | 关闭弹窗的按钮属性 |
 
-/* 弹窗主体 */
-.modal-detail-block {
-  width: 400px;
-  background: #fff;
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  transform: translateY(-50%);
-  margin: auto;
-  padding: 32px;
-  border-radius: 2px;
-}
+### 方法
 
-/* 标题 */
-.modal-title {
-  font-size: 18px;
-  color: #252b3a;
-  text-align: left;
-  height: 26px;
-  line-height: 26px;
-  padding-left: 32px;
-  position: relative;
-}
+使用 `$().porModal(methodName, options)` 调用。
 
-/* 标题图标（通过 ::before） */
-.modal-title::before {
-  content: '';
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  left: 0;
-  top: 1px;
-  position: absolute;
-}
-.modal-title.succeed::before { background: url(icon-succeed.svg); }
-.modal-title.failed::before  { background: url(icon-failed.svg); }
-.modal-title.warning::before { background: url(icon-warning.svg); }
+| 方法名 | 描述 | 传参 |
+| --- | --- | --- |
+| `show` | 显示弹窗 | -- |
+| `hide` | 隐藏弹窗 | -- |
+| `reset` | 重置弹窗内容 | `resetOptions` |
 
-/* 内容 */
-.warning-box {
-  padding: 12px 0 28px;
-  min-height: 76px;
-}
+### 静态方法
 
-.msg-block {
-  font-size: 12px;
-  color: #575D6C;
-  line-height: 18px;
-}
+使用 `$.fn.porModal.Constructor.show(resetOptions)`（或简写为 `Modal.show`）和 `Modal.hide()` 调用。
 
-/* 链接 */
-.warning-detail a[href] { color: #526ECC; }
-.warning-detail a[href]:hover { text-decoration: underline; }
+| 方法名 | 描述 | 传参 |
+| --- | --- | --- |
+| `Modal.show` | 静态显示/创建弹窗 | `resetOptions` |
+| `Modal.hide` | 静态隐藏弹窗 | -- |
 
-/* 关闭按钮（X 形） */
-.icon-delete {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  right: 20px;
-  top: 20px;
-  cursor: pointer;
-}
-.icon-delete::before {
-  content: "";
-  width: 16px; height: 1px;
-  border: 1px solid #8A8E99;
-  transform: rotateZ(45deg);
-  position: absolute;
-  top: 7px;
-}
-.icon-delete::after {
-  content: "";
-  width: 16px; height: 1px;
-  border: 1px solid #8A8E99;
-  transform: rotateZ(-45deg);
-  position: absolute;
-  top: 7px;
-}
-.icon-delete:hover::before,
-.icon-delete:hover::after {
-  border-color: #C7000B;
-}
+### resetOptions
 
-/* 按钮组 */
-.btn-block {
-  text-align: center;
-  padding: 0;
-}
-.btn-block .btn-white { margin-left: 10px; }
-```
+| 属性名 | 描述 | 类型 | 默认值 | 备注 |
+| --- | --- | --- | --- | --- |
+| `title` | 标题 | string \| HTMLElement \| JQuery | -- | -- |
+| `text` | 正文 | string \| HTMLElement \| JQuery | -- | -- |
+| `icon` | 图标 | string \| HTMLElement \| JQuery | -- | 可选内置值见下表 |
+| `size` | 尺寸 | string | 'small' | small, middle, large, xlarge |
+| `isBackdropCloseModal` | 点击背景是否关闭 | boolean | true | -- |
+| `buttons` | 按钮配置 | Array<buttonOptions> \| string \| ... | -- | -- |
 
-## 移动端适配
+#### icon 可选内置值
 
-```css
-@media (max-width: 768px) {
-  .modal-detail-block {
-    width: calc(100% - 30px);
-    padding: 24px;
-  }
-  .modal-title {
-    font-size: 16px;
-    line-height: 20px;
-    padding-left: 24px;
-    height: 20px;
-  }
-  .modal-title::before { width: 18px; height: 18px; }
-  .icon-delete { width: 12px; height: 12px; right: 16px; top: 16px; }
-}
-```
+- `Modal.iconStyle.prompt` : 提示
+- `Modal.iconStyle.success` : 成功
+- `Modal.iconStyle.warn` : 告警
+- `Modal.iconStyle.error` : 错误
 
-## 标签选择弹窗
+### buttonOptions
 
-开发者站特有的标签选择弹窗：
+| 属性名 | 描述 | 类型 | 默认值 | 备注 |
+| --- | --- | --- | --- | --- |
+| `text` | 按钮文本 | string | -- | -- |
+| `style` | 按钮风格 | string | `Modal.buttonStyle.primary` | 可选内置值见下表 |
+| `href` | 链接 | string | -- | -- |
+| `isBlank` | 是否新窗口打开 | boolean | false | -- |
+| `isCloseModal` | 是否点击关闭 | boolean | true | -- |
+| `onClick` | 自定义点击事件 | Function | -- | -- |
 
-```html
-<div class="modal-overlay"></div>
-<div class="label-prompt-modal-content">
-  <div class="label-prompt-title">选择标签</div>
-  <div class="select-section">
-    <div class="select-section-box">
-      <div class="label-prompt-list">
-        <div class="label-prompt-label active">标签名</div>
-      </div>
-    </div>
-  </div>
-  <div class="select-section-btn">
-    <button class="developer-btns btn-red">确定</button>
-    <button class="developer-btns btn-white prompt-cancel">取消</button>
-  </div>
-</div>
-```
+#### style 可选内置值
 
-### 标签样式
+- `Modal.buttonStyle.primary`
+- `Modal.buttonStyle.secondary`
+- `Modal.buttonStyle.dark`
+- `Modal.buttonStyle.light`
 
-```css
-.label-prompt-label {
-  float: left;
-  max-height: 56px;
-  line-height: 28px;
-  background-color: #f5f5f6;
-  padding: 0 12px;
-  margin-bottom: 8px;
-  margin-right: 8px;
-  cursor: pointer;
-  border-radius: 2px;
-}
+### 事件
 
-.label-prompt-label:hover { color: #c7000b; }
-.label-prompt-label.active { color: #c7000b; }
-```
+使用 `$().on(eventName, function(){})` 绑定。
+
+| 事件名 | 描述 |
+| --- | --- |
+| `beforeShow` | 弹窗显示前 |
+| `beginShow` | 弹窗开始显示（可获取尺寸） |
+| `shown` | 弹窗完成显示 |
+| `beforeHide` | 弹窗隐藏前 |
+| `beginHide` | 弹窗开始隐藏 |
+| `hidden` | 弹窗完成隐藏 |
+
+### 静态属性
+
+| 属性名 | 描述 |
+| --- | --- |
+| `Modal.scrollElement` | 指定滚动条容器（默认为 document.body） |

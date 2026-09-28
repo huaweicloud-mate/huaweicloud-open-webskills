@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HWC Developer Portal - 示例页面</title>
 
-  <!-- 设计 Token -->
-  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/3.0.6/theme-token.css">
+  <!-- 公共开发者页头依赖（顺序固定，见 references/components/navigation.md） -->
+  <link rel="stylesheet" href="https://portal.hc-cdn.com/cnpm-baseui/2.8.11/index.css?sttl=202202241920">
+  <script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/jquery.min.js?sttl=1.0.77&ttr=1.0.5"></script>
+  <script src="https://developer.huaweicloud.com/portal-res-static/developer-preload-header.js?url=https://developer.huaweicloud.com/common/hwcheader2026.html"></script>
+  <script>window.developerHeaderUrl = 'https://developer.huaweicloud.com/common/hwcheader2026.html';</script>
+  <script src="https://res-static.hc-cdn.cn/aem/content/dam/cloudbu-develop/archive/china/zh-cn/developer/developer-page/js/developer-pep2-template.js"></script>
 
   <style>
     /* ========== 基础重置 ========== */
@@ -347,7 +351,9 @@
 </head>
 <body>
 
-  <!-- ========== 页头 ========== -->
+  <!-- ========== 页头（公共开发者页头，页脚自动 append）========== -->
+  <hd-header></hd-header>
+  <!-- 备选：无法接入公共页头时，改用下方自研页头（已注释）
   <header id="header">
     <div class="header-inner">
       <a href="/" class="header-logo">
@@ -368,6 +374,8 @@
       </div>
     </div>
   </header>
+  -->
+
 
   <!-- ========== Banner ========== -->
   <section class="hero-banner">
@@ -490,27 +498,7 @@
     </div>
   </div>
 
-  <!-- ========== 页脚 ========== -->
-  <footer id="footer">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-links">
-          <a href="#">关于我们</a>
-          <a href="#">HWC用户协议</a>
-          <a href="#">隐私政策声明</a>
-          <a href="#">联系我们</a>
-          <a href="#">加入我们</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Huawei Cloud. All rights reserved.</span>
-        <div>
-          <a href="#">粤ICP备xxxxxxxx号</a>
-          <a href="#">粤公网安备xxxxxxxx号</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- ========== 页脚：由 developer-pep2-template.js 自动 append 到 body ========== -->
 
 </body>
 </html>

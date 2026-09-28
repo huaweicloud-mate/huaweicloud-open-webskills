@@ -1,39 +1,35 @@
 # 间距系统
 
-来源：`cnpm-baseui` theme-token.css + developer-common.css
+来源：`cnpm-baseui` (3.0.17) Tiny PortalUI design-tokens + 页面分析
 
-## 基础尺寸
+## 1. 尺寸百分比
 
-所有尺寸基于 `--por-base-size-2: 2px` 的倍数系统：
+| 变量名 | 值 | 说明 |
+| :--- | :--- | :--- |
+| `--por-base-size-percent-small` | `25%` | 1/4 |
+| `--por-base-size-percent-middle` | `50%` | 1/2 |
+| `--por-base-size-percent-large` | `75%` | 3/4 |
+| `--por-base-size-percent-extra-large` | `100%` | 全宽 |
 
-| Token | 计算值 | 等效 px |
-|-------|--------|---------|
-| `--por-base-size-0` | 0 | 0px |
-| `--por-base-size-1` | 1 | 1px |
-| `--por-base-size-2` | — | **2px**（基准单位） |
-| `--por-base-size-3` | 3 | 3px |
-| `--por-base-size-4` | 2×2 | 4px |
-| `--por-base-size-6` | 2×3 | 6px |
-| `--por-base-size-8` | 2×4 | 8px |
-| `--por-base-size-10` | 2×5 | 10px |
-| `--por-base-size-12` | 2×6 | 12px |
-| `--por-base-size-14` | 2×7 | 14px |
-| `--por-base-size-16` | 2×8 | **16px** |
-| `--por-base-size-20` | 2×10 | 20px |
-| `--por-base-size-24` | 2×12 | **24px** |
-| `--por-base-size-32` | 2×16 | 32px |
-| `--por-base-size-40` | 2×20 | **40px** |
-| `--por-base-size-48` | 2×24 | 48px |
-| `--por-base-size-60` | 2×30 | 60px |
-| `--por-base-size-64` | 2×32 | 64px |
-| `--por-base-size-72` | 2×36 | 72px |
-| `--por-base-size-76` | 2×38 | **76px**（Section 上下间距） |
-| `--por-base-size-100` | 2×50 | 100px |
+## 2. 常用间距数值
 
-## 容器宽度
+| 值 | 用途 |
+|------|------|
+| `2px` | 基准单位（`--por-base-size-2`） |
+| `4px` | 基础间距 |
+| `8px` | 小间距 |
+| `16px` | 中间距（small 尺寸按钮左右 padding） |
+| `20px` | 桌面端容器左右 padding |
+| `24px` | 卡片内边距、按钮（default）左右 padding |
+| `32px` | 按钮（medium）左右 padding |
+| `40px` | Section 头部间距 |
+| `48px` | 按钮（large）左右 padding |
+| `76px` | Section 上下间距（PC） |
+| `15px` | 移动端容器左右 padding |
+
+## 3. 容器宽度
 
 ```css
-/* 主容器 */
 .por-container {
   max-width: 1280px;
   margin-left: auto;
@@ -53,61 +49,24 @@
 }
 ```
 
-## 响应式断点
+## 4. 响应式断点（栅格专用）
 
-| 名称 | 范围 | 说明 |
-|------|------|------|
-| PC 大屏 | ≥1440px | 容器 1280px |
-| PC 标准 | 1025px ~ 1439px | 容器 1200px |
-| Pad | 769px ~ 1024px | 容器流式（3% padding） |
-| Mobile | ≤768px | 容器流式（15px padding） |
+栅格系统按以下屏幕尺寸划分（见 `layouts/grid.md`）：
 
-### 断点 Token
+| 屏幕类型 | 尺寸范围 | 类前缀 |
+| --- | --- | --- |
+| 超大屏 | >1600px | `.por-col-` |
+| 大屏 | ≤1600px | `.por-col-lg` |
+| 中屏 | ≤1280px | `.por-col-md` |
+| 小屏 | ≤1024px | `.por-col-sm` |
+| 超小屏 | ≤768px | `.por-col-xs` |
 
-```css
---por-container-xl-min: 1776px;   /* 超大屏 */
---por-container-lg-max: 1775px;
---por-container-lg-min: 1025px;   /* 大屏（PC） */
---por-container-md-max: 1024px;
---por-container-md-min: 769px;    /* 中屏（Pad） */
---por-container-xs-min: 768px;    /* 小屏起始 */
-```
-
-## Section 间距
+## 5. Section 间距
 
 ```css
-/* 页面区块上下间距 */
 --por-section-padding-top-pc-l: 76px;
 --por-section-padding-bottom-pc-l: 76px;
 --por-section-head-padding-bottom-pc-l: 40px;
 ```
 
-## 栅格系统
-
-使用 24 列栅格（从 HTML 中的 `por-col-24` 推断）：
-
-```html
-<div class="por-row">
-  <div class="por-col-24">整行</div>
-</div>
-<div class="por-row">
-  <div class="por-col-12">半行</div>
-  <div class="por-col-12">半行</div>
-</div>
-<div class="por-row">
-  <div class="por-col-8">1/3</div>
-  <div class="por-col-8">1/3</div>
-  <div class="por-col-8">1/3</div>
-</div>
-```
-
-## 常用间距速查
-
-| 场景 | 间距值 |
-|------|--------|
-| Section 上下 padding | 76px（PC）/ 40px（移动） |
-| 标题与内容间距 | 40px |
-| 卡片内边距 | 24px ~ 32px |
-| 按钮左右 padding | 24px（默认）/ 32px（medium）/ 48px（large） |
-| 列表项间距 | 16px ~ 24px |
-| 移动端容器左右 | 15px |
+- 去除楼层上下间距：`por-section-merge-spacing-top` / `por-section-merge-spacing-bottom`

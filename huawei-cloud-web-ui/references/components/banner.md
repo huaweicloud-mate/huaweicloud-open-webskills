@@ -4,6 +4,8 @@
 
 ## 开发者站 Banner 轮播
 
+> ⚠️ `pep-hwc-dtt-head-carousels`、`por-carousel-pc/-pad/-m/-banner`、`banner-link` 等**均非 baseui 类**，是开发者站（PEP 组件）自定义类，`cnpm-baseui` 中未定义；纯 baseui 轮播请使用 [轮播](carousel.md) 的 `.por-carousel` 结构。
+
 ### 结构（三端自适应）
 
 ```html

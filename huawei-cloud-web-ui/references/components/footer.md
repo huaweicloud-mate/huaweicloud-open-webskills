@@ -2,6 +2,8 @@
 
 来源：HTML 结构分析 + CSS 分析
 
+> 接入公共开发者页头（`<hd-header>`）时，页脚由 `developer-pep2-template.js` 自动 append 到 body，**无需本文件的自建页脚**（见 [导航 / 页头](navigation.md)）；本文用于**自研页脚（备选）**场景。
+
 ## 页脚结构
 
 页脚由统一的页头页脚组件渲染：

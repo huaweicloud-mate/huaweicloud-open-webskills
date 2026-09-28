@@ -1,8 +1,10 @@
-# 登录模式页头（自研页头可选模式）
+# 登录模式页头（备选：自研页头的登录区）
 
-> 适用场景：页面不使用官方 `<hd-header>` 动态组件（见 [navigation.md](navigation.md)），而是**自研页头**时，右侧登录区（登录/用户菜单）的交互与视觉规范。提炼自华为云开放能力闯关活动页（huaweicloud_open_activity）的实际实现，移动端交互对齐 developer.huaweicloud.com/grow 页 `header-tools` 官方效果。
+> ⚠️ **默认优先接入华为云开发者公共页头 `<hd-header>`**（导航 / 用户菜单 / 页脚自动生成，交互与登录态跟随官网，见 [navigation.md](navigation.md)）。**仅当无法接入公共页头、退回自研页头时**，才按本文实现右侧登录区（登录 / 用户菜单）。
 >
-> 作为**可选模式**集成：使用官方 `<hd-header>` 时无需本规范；自研页头时按本文实现登录区。
+> 提炼自华为云开放能力闯关活动页（huaweicloud_open_activity）的实际实现，移动端交互对齐 developer.huaweicloud.com/grow 页 `header-tools` 官方效果。
+>
+> 登录态判定：调用 `fetchUserInfo()`（同源/跨域 userinfo 接口），返回含 `username` 即已登录；状态不持久化（初始 `user=null, checking=true`，仅探测通过后 `setUser`）。IAM 回跳场景（URL 带 `ticket`/`code`，或 referrer 为 auth 域）需重试若干次（如 5 次 × 1s）。
 
 ## 交互模式总览
 

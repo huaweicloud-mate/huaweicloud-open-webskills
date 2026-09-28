@@ -1,109 +1,64 @@
 # 字体排版
 
-来源：`cnpm-baseui` theme-token.css + developer-common.css
+来源：`cnpm-baseui` (3.0.17) Tiny PortalUI design-tokens + text 规范
 
-## 字体族
+## 1. 字体族
 
-```css
-/* 主字体栈 */
---por-base-font-family:
-  -apple-system,
-  HuaweiSans,          /* HWC proprietary font */
-  Helvetica Neue,
-  Helvetica,
-  Arial,
-  PingFang SC,         /* macOS 中文 */
-  Hiragino Sans GB,
-  STHeiti,
-  Microsoft YaHei,     /* Windows 中文 */
-  Microsoft JhengHei,
-  SimSun,
-  sans-serif;
-```
-
-## 字号体系
-
-所有字号基于 `--por-base-size-2: 2px` 的整数倍：
-
-| Token | 值 | 用途 |
-|-------|-----|------|
-| `--por-font-size-12` | 12px | 最小文字、辅助信息 |
-| `--por-font-size-14` | 14px | **正文默认**、按钮文字 |
-| `--por-font-size-16` | 16px | 小标题、强调文字 |
-| `--por-font-size-18` | 18px | 模块标题、Modal 标题 |
-| `--por-font-size-20` | 20px | 区块标题 |
-| `--por-font-size-22` | 22px | — |
-| `--por-font-size-24` | 24px | 移动端 Banner 标题 |
-| `--por-font-size-28` | 28px | — |
-| `--por-font-size-30` | 30px | — |
-| `--por-font-size-32` | 32px | — |
-| `--por-font-size-36` | 36px | 大标题 |
-| `--por-font-size-40` | 40px | **Banner 大标题**（PC） |
-| `--por-font-size-48` | 48px | 超大标题 |
-| `--por-font-size-60` | 60px | Hero 标题 |
-
-## 行高体系
-
-| Token | 值 | 搭配字号 |
-|-------|-----|---------|
-| `--por-font-line-height-18` | 18px | 12px 文字 |
-| `--por-font-line-height-22` | 22px | **14px 正文** |
-| `--por-font-line-height-24` | 24px | 16px 文字 |
-| `--por-font-line-height-28` | 28px | 18-20px 标题 |
-| `--por-font-line-height-30` | 30px | 20px 标题 |
-| `--por-font-line-height-36` | 36px | 24px 标题 |
-| `--por-font-line-height-40` | 40px | 大标题 |
-| `--por-font-line-height-48` | 48px | 超大标题 |
-| `--por-font-line-height-60` | 60px | Hero 标题 |
-
-## 字重
-
-| Token | 值 | 用途 |
-|-------|-----|------|
-| `--por-base-font-weight-lighter` | lighter | — |
-| `--por-base-font-weight-normal` | normal (400) | 正文 |
-| `--por-base-font-weight-bold` | bold (700) | 标题、强调 |
-
-## 开发者站特有排版
-
-从 `developer-common.css` 提取的固定值：
+| 变量名 | 值 | 说明 |
+| :--- | :--- | :--- |
+| `--por-base-font-family` | `-apple-system, HuaweiSans, ...` | 默认字体栈 |
+| `--por-base-font-family-ja-jp` | `-apple-system, "メイリオ", ...` | 日语字体栈 |
+| `--por-base-font-family-ar-mena` | `Manrope, -apple-system, ...` | 中东/阿拉伯字体栈 |
 
 ```css
-/* Banner 标题 */
-.banner-title-main {
-  font-size: 40px;
-  color: #252b3a;
-  line-height: 50px;
-  font-weight: 700;
-}
-
-/* Banner 副标题 */
-.banner-title-side {
-  font-size: 14px;
-  color: #575D6C;
-  line-height: 22px;
-}
-
-/* 标题装饰竖线 */
-.maintenance-title::before {
-  border-left: 3px solid #f66f6a;
-}
-
-/* 移动端 Banner */
-@media (max-width: 768px) {
-  .poster-caption { font-size: 24px; line-height: 30px; }
-  .poster-text { font-size: 12px; line-height: 18px; }
-}
+/* 主字体栈（HTML 中常用） */
+font-family: HuaweiSans, PingFang SC, Microsoft YaHei, sans-serif;
 ```
 
-## 语义化排版类名
+## 2. 字重
 
-主题系统提供语义化的文字类名（从 HTML 分析得出）：
+| 变量名 | 值 | 说明 |
+| :--- | :--- | :--- |
+| `--por-base-font-weight-lighter` | `lighter` | 较细字重 |
+| `--por-base-font-weight-normal` | `normal` | 常规字重 |
+| `--por-base-font-weight-bold` | `bold` | 加粗字重 |
+| `--por-base-font-weight-bolder` | `bolder` | 更粗字重 |
 
-| 类名 | 推测用途 |
-|------|---------|
-| `.por-text-title-t8` | 标题文字（t8 层级） |
-| `.por-text-body-t1` | 正文文字（t1 层级） |
-| `.por-text-body-t2` | 正文文字（t2 层级） |
-| `.por-link` | 链接文字 |
-| `.por-link-more` | "了解更多"链接 |
+## 3. 文本规范（Text）
+
+1. 中、英文使用独立字体。
+2. 术语一致性（如：统一使用"编辑"或"Edit"）。
+3. 特定元素（菜单、大标题）全大写或首字母大写。
+4. 中英混排时，英文字符切换为 Huawei Sans。
+
+## 4. 语义化字号类名
+
+通过给元素添加以下 class 使用官方字号/行高：
+
+| 类型 | 字体/字号/行高 | class |
+| --- | --- | --- |
+| 标题 1 | PingFangSC / 60px / 84Line | `class="por-text-title-t1"` |
+| 标题 2 | PingFangSC / 48px / 72Line | `class="por-text-title-t2"` |
+| 标题 3 | PingFangSC / 40px / 60Line | `class="por-text-title-t3"` |
+| 正文 1 | PingFangSC / 18px / 28Line | `class="por-text-body-t1"` |
+| 正文 2 | PingFangSC / 16px / 24Line | `class="por-text-body-t2"` |
+| 正文 3 | PingFangSC / 14px / 22Line | `class="por-text-body-t3"` |
+
+## 5. 实际使用示例
+
+```html
+<h1 class="por-text-title-t1">大标题</h1>
+<h3 class="por-text-title-t3">卡片标题</h3>
+<div class="por-text-body-t1">正文内容</div>
+<div class="por-text-body-t2">次级正文</div>
+```
+
+## 6. 单行省略
+
+`por-text-body-t1-textOverflow` 可实现文字单行显示、溢出省略号，但需与 `por-text-body-t1` 同用，且处于 `.por-card .por-card-content` 内才生效（baseui 将该规则限定在卡片作用域）：
+
+```html
+<div class="por-card"><div class="por-card-content">
+  <div class="por-text-body-t1 por-text-body-t1-textOverflow">很长的一段文字...</div>
+</div></div>
+```
