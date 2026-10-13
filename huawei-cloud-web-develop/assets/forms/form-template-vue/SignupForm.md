@@ -1,3 +1,8 @@
+# Vue3 表单组件 SignupForm（原 SignupForm.vue）
+
+> 说明：平台不支持 .vue / .css 文件类型，已转为 Markdown 下的代码块，内容原样保留；实际使用时请另存为对应源文件。
+
+```vue
 <template>
   <form ref="rootEl" class="form" novalidate @submit.prevent="onSubmit">
     <div class="field">
@@ -251,3 +256,4 @@ onBeforeUnmount(() => {
 .form__status[data-kind="success"] { color: #16a34a; }
 .form__status[data-kind="error"] { color: #dc2626; }
 </style>
+```

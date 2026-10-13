@@ -29,7 +29,7 @@
 - **内置强制规则**：
   1. 能用 OpenTiny 组件实现的，不要用 HTML 标签手写（`npx skills add opentiny/agent-skills`）
   2. 项目内部 CSS 样式统一加 `#当前项目id` 前缀，避免被公共样式污染
-- **结构**：`SKILL.md`（工作流 + 强制规则 + 资源索引）+ `references/`（scaffold/ui/nav-footer/forms/responsive-layout/code-style）+ `assets/`（可复制的 `.vue`/`.js`/`.css`）
+- **结构**：`SKILL.md`（工作流 + 强制规则 + 资源索引）+ `references/`（scaffold/ui/nav-footer/forms/responsive-layout/code-style）+ `assets/`（`.js` 原件 + `.md` 包裹的 `.vue`/`.css` 源码）
 
 ### huawei-cloud-web-review（测试 / QA 阶段）
 
@@ -40,7 +40,7 @@
 
 ### 平台约束
 
-- 上述两个技能文件夹内**不包含 `.html` 文件**（平台要求）。原 `.html` 整页示例与模板入口页已转为 Markdown 下的 HTML 代码块，内容原样保留。
+- 上述两个技能文件夹**仅包含平台支持的文件类型（`.md` / `.js` / `.yaml`），不含 `.html` / `.vue` / `.css` 文件**。原 `.html` 整页示例、`.vue` 组件与 `.css` 样式均已转为 Markdown 下的代码块，内容原样保留。
 - 技能统一采用 `SKILL.md` + `references/` 多文件结构。
 
 ## 安装

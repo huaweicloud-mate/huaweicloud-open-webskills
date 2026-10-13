@@ -17,7 +17,7 @@ description: 华为云前端开发 Skill（合并版），面向 Vue 3 + TypeScr
 
 1. **组件优先**：凡 OpenTiny（TinyVue）能覆盖的 UI 能力（按钮、表格、表单、弹窗、提示、分页、布局等），一律用 `@opentiny/vue` 组件实现，**禁止用原生 HTML 标签手写同等能力**；仅在 OpenTiny 未提供对应组件时，才退回 HTML / Tiny PortalUI 静态结构。
 2. **样式隔离**：项目内部自研 CSS 必须加上当前项目 id 前缀（例如以 `#my-project` 作为最外层作用域），避免被 `global.min.css` / `developer-common.css` / PortalUI 等公共样式污染；**禁止全局裸选择器**（如 `.card`、`header`、`body`）。
-3. **文件约束**：本 skill 文件夹内不得包含 `.html` 文件（平台要求）。原本的整页 HTML 示例与模板入口页已转为 Markdown 下的 HTML 代码块，内容原样保留，见 `references/ui/examples/` 与 `references/forms/template-index.md`。
+3. **文件约束**：本 skill 文件夹内仅包含平台支持的文件类型（`.md` / `.js` / `.yaml`），**不含 `.html` / `.vue` / `.css`**。原本的整页 HTML 示例、`.vue` 组件与 `.css` 样式均已转为 Markdown 下的代码块，内容原样保留（见 `references/ui/examples/`、`references/forms/template-index.md` 及 `assets/**/*.md`）；复制使用时另存为对应源文件即可。
 4. **OpenTiny 组件 API 以官方 Skill 为准**：`npx skills add opentiny/agent-skills --list`，全局安装 `tiny-vue-skill`（`npx skills add opentiny/agent-skills -g --skill tiny-vue-skill --agent claude-code`）。
 
 ## 开发工作流
@@ -37,7 +37,7 @@ description: 华为云前端开发 Skill（合并版），面向 Vue 3 + TypeScr
 ### 2. 页头 NavBar 与页脚 Footer
 
 即插即用的 Vue 3 SFC：白色吸顶导航栏 + 黑色「中国站」顶栏 + 移动端汉堡菜单 + 华为云营销页尾。
-→ 读取 `references/nav-footer/overview.md`；组件在 `assets/nav-footer/`（`Header.vue` / `Footer.vue`）
+→ 读取 `references/nav-footer/overview.md`；组件在 `assets/nav-footer/`（`Header.md` / `Footer.md`，内含 `.vue` 源码）
 
 ### 3. 登录 / 登出（IAM SSO）
 
@@ -57,7 +57,7 @@ description: 华为云前端开发 Skill（合并版），面向 Vue 3 + TypeScr
 ### 6. 代码与组件规范
 
 SFC 结构、目录与命名、组件设计（props/emits、单向数据流、插槽、透传）、代码风格（script setup、TS 类型、computed/watch）、scoped 样式与类名规范。
-→ 读取 `references/code-style/overview.md`；细则 `references/code-style/code-style.md`、`references/code-style/component-rules.md`；示例组件 `assets/code-style/ExampleCard.vue`
+→ 读取 `references/code-style/overview.md`；细则 `references/code-style/code-style.md`、`references/code-style/component-rules.md`；示例组件 `assets/code-style/ExampleCard.md`（内含 `.vue` 源码）
 
 ## 资源索引
 
@@ -74,11 +74,11 @@ SFC 结构、目录与命名、组件设计（props/emits、单向数据流、�
 | `references/forms/` | 表单工作流、校验规则、提交流程、模板入口页 |
 | `references/responsive-layout/` | 响应式布局工作流、断点、Vue3 写法 |
 | `references/code-style/` | 代码规范工作流、代码风格、组件规则 |
-| `assets/` | 可复制的 `.vue` / `.js` / `.css` 组件与工具（不含 `.html`） |
+| `assets/` | 可复制的组件与工具：`.js` 原件 + `.md` 包裹的 `.vue` / `.css` 源码（不含 `.html` / `.vue` / `.css` 文件） |
 
 ## 注意事项
 
 - 所有样式优先使用 CSS 变量（`var(--por-xxx)`），勿硬编码颜色；以 `--por-base-` 开头的底层变量不在业务中直接引用。
 - 交互类组件（轮播、页签、折叠、弹窗等）依赖 jQuery 与 `theme-token.js`。
 - 涉及华为云视觉规范时，Token / 组件以 `references/ui/` 为准；涉及组件实现时，优先使用 OpenTiny 组件。
-- 本 skill 文件夹不含 `.html` 文件；如平台后续还要求 Markdown 正文内也去除 HTML 标签，需再对 `references/` 做一轮"HTML → 描述"转换。
+- 本 skill 文件夹不含 `.html` / `.vue` / `.css` 文件（平台仅接受 `.md` / `.js` / `.yaml`）；相关源码均以 Markdown 代码块形式内嵌。

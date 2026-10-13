@@ -1,3 +1,8 @@
+# 自适应区块示例组件（原 ResponsiveSection.vue）
+
+> 说明：平台不支持 .vue / .css 文件类型，已转为 Markdown 下的代码块，内容原样保留；实际使用时请另存为对应源文件。
+
+```vue
 <template>
   <section class="section">
     <header class="section__header">
@@ -80,3 +85,4 @@ const items = [
   .section__filter-btn { display: none; }
 }
 </style>
+```

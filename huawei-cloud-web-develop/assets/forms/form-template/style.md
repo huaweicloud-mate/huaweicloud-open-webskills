@@ -1,3 +1,8 @@
+# 原生表单模板样式（原 style.css）
+
+> 说明：平台不支持 .vue / .css 文件类型，已转为 Markdown 下的代码块，内容原样保留；实际使用时请另存为对应源文件。
+
+```css
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -49,3 +54,4 @@ body {
 .form__status { margin: 12px 0 0; font-size: 14px; text-align: center; min-height: 20px; }
 .form__status[data-kind="success"] { color: #16a34a; }
 .form__status[data-kind="error"] { color: #dc2626; }
+```

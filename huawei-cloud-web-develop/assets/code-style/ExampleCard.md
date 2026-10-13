@@ -1,3 +1,8 @@
+# 规范示例组件 ExampleCard（原 ExampleCard.vue）
+
+> 说明：平台不支持 .vue / .css 文件类型，已转为 Markdown 下的代码块，内容原样保留；实际使用时请另存为对应源文件。
+
+```vue
 <!-- 规范示例组件：ExampleCard -->
 <!-- 结构顺序：template → script setup → style scoped -->
 <template>
@@ -106,3 +111,4 @@ const cardClass = computed(() => ({
   cursor: not-allowed;
 }
 </style>
+```
