@@ -15,6 +15,33 @@
 | huawei-cloud-web-code-style | Vue3 组件与代码规范：SFC 结构、命名、props/emits、TS 类型、评审清单 |
 | huawei-cloud-web-nav-footer | 华为云风格页头 NavBar 与页尾 Footer：黑色中国站顶栏、白色吸顶导航、移动端汉堡菜单、营销页尾，Vue3 组件即插即用 |
 | huawei-cloud-web-ui | 华为云官网 UI 设计规范（cnpm-baseui 3.0.17）：设计 Token（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉/单选复选/日期/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局（楼层/栅格）、页头接入（开发者官网场景默认接入公共 `<hd-header>`）、XTemplate 与完整示例 |
+| **huawei-cloud-web-develop** | **（合并新增）开发阶段入口技能**：合并 scaffold/ui/nav-footer/login/form/responsive-layout/code-style，端到端开发，内置「OpenTiny 组件优先」「项目 CSS 加 `#项目id` 前缀」两条强制规则 |
+| **huawei-cloud-web-review** | **（合并新增）测试/QA 阶段入口技能**：合并 compatibility/performance + code-style 评审清单，做兼容性、性能与代码规范审查（暂不含 UI 审查） |
+
+## 阶段合并技能（新增）
+
+为适配「**一个阶段只能加载一个 skill**」的平台（如 grape），把开发阶段与审查阶段的相关技能分别合并为两个**入口技能**。**原有技能全部保留、不删除；以下两个技能为纯新增。**
+
+### huawei-cloud-web-develop（开发阶段）
+
+- **合并自**：`huawei-cloud-web-scaffold`、`huawei-cloud-web-ui`、`huawei-cloud-web-nav-footer`、`huawei-cloud-web-login`、`huawei-cloud-web-form`、`huawei-cloud-web-responsive-layout`、`huawei-cloud-web-code-style`
+- **覆盖流程**：工程脚手架 → UI 规范与组件 → 页头/页脚 → 登录 → 表单 → 响应式布局 → 代码规范
+- **内置强制规则**：
+  1. 能用 OpenTiny 组件实现的，不要用 HTML 标签手写（`npx skills add opentiny/agent-skills`）
+  2. 项目内部 CSS 样式统一加 `#当前项目id` 前缀，避免被公共样式污染
+- **结构**：`SKILL.md`（工作流 + 强制规则 + 资源索引）+ `references/`（scaffold/ui/nav-footer/forms/responsive-layout/code-style）+ `assets/`（可复制的 `.vue`/`.js`/`.css`）
+
+### huawei-cloud-web-review（测试 / QA 阶段）
+
+- **合并自**：`huawei-cloud-web-compatibility`、`huawei-cloud-web-performance`，以及 `huawei-cloud-web-code-style` 的评审自查清单
+- **覆盖流程**：代码规范评审 → 浏览器兼容性审查 → 性能审查 → 统一验收清单
+- **范围说明**：当前**不包含 UI 设计规范审查**
+- **结构**：`SKILL.md` + `references/`（browser-compatibility/browser-matrix/resolution-support/compatibility-techniques/performance/performance-metrics/performance-techniques/review-checklist）+ `assets/`（`feature-detect.js`/`vitals-collect.js`）
+
+### 平台约束
+
+- 上述两个技能文件夹内**不包含 `.html` 文件**（平台要求）。原 `.html` 整页示例与模板入口页已转为 Markdown 下的 HTML 代码块，内容原样保留。
+- 技能统一采用 `SKILL.md` + `references/` 多文件结构。
 
 ## 安装
 

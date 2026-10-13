@@ -1,0 +1,4 @@
+interface:
+  display_name: "华为云前端审查 Skill"
+  short_description: "华为云前端审查（合并版）：浏览器兼容性审查、Web 性能审查、Vue3 代码规范评审与统一验收清单；不含 UI 设计规范审查"
+  default_prompt: "使用 $huawei-cloud-web-review 审查这份前端产物的兼容性、性能与代码规范"
