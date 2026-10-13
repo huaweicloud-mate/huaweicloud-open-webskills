@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-ui
-description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
+description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**Vue 3 工程优先使用 OpenTiny（TinyVue）组件库，能用组件实现的不要用 HTML 标签手写（安装 `npx skills add opentiny/agent-skills`）**；**项目内部 CSS 样式统一加 `#当前项目id` 前缀做样式隔离**；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
 ---
 
 # 华为云官网 UI 设计规范 Skill
@@ -19,6 +19,60 @@ description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm
 - 开发者站公共样式：`developer-common.css`
 - 前缀规范：所有 CSS 变量和组件类名均以 `por-` 为前缀（Portal 缩写）
 
+## OpenTiny 组件库（组件优选）
+
+Tiny PortalUI 只提供 HTML/CSS + jQuery 的轻量静态组件；**在 Vue 3 工程中，交互与 UI 一律优先使用 OpenTiny（TinyVue）组件库**，而不是用原生 HTML 标签手写。
+
+### 安装 OpenTiny Agent Skill
+
+```bash
+# 列出 OpenTiny 仓库中所有可安装的 skills（含 tiny-vue-skill）
+npx skills add opentiny/agent-skills --list
+
+# 全局安装 tiny-vue-skill（Claude Code / VS Code；OpenCode 全局路径见下）
+npx skills add opentiny/agent-skills -g --skill tiny-vue-skill --agent claude-code
+
+# 项目级安装
+npx skills add opentiny/agent-skills --skill tiny-vue-skill --agent claude-code
+```
+
+- OpenCode 全局安装路径：`~/.config/opencode/skills/tiny-vue-skill`
+- TinyVue 组件会定期升级，需重新执行 `skills add` 更新该 Skill
+- 安装后，编写 TinyVue 组件（Grid/Form/Table/Dialog 等）时遵循 `tiny-vue-skill` 的用法与 API
+
+### 组件优先原则（强制）
+
+> **能用 OpenTiny 组件实现的，不要用 HTML 标签实现。**
+
+| 场景 | 使用 OpenTiny 组件 | 禁止 |
+|------|------------------|------|
+| 按钮 | `<tiny-button>` | `<button>` 手写样式 |
+| 表格 | `<tiny-grid>` | `<table>` |
+| 表单 | `<tiny-form>` / `<tiny-form-item>` | `<form>` + 手写校验 |
+| 输入 / 下拉 / 日期 | `<tiny-input>` / `<tiny-select>` / `<tiny-date-picker>` | `<input>` / `<select>` |
+| 弹窗 / 抽屉 | `<tiny-dialog-box>` / `<tiny-drawer>` | 手写遮罩 DOM |
+| 提示 / 标签 / 分页 | `<tiny-alert>` / `<tiny-tag>` / `<tiny-pager>` | 手写结构 |
+
+仅在 OpenTiny **未提供**对应组件时，才退回 HTML 标签或 Tiny PortalUI 静态结构（此时仍需保证视觉与 PortalUI Token 一致）。
+
+## 样式隔离规范（强制）
+
+项目内部自定义 CSS 必须加上**当前项目的 id 前缀**（如 `#project-id`），避免被公共样式（`global.min.css` / `developer-common.css` / PortalUI）污染：
+
+```css
+/* ✅ 正确：以当前项目 id 作为最外层作用域 */
+#my-project .card { padding: 16px; }
+#my-project .card__title { color: var(--por-color-text-primary); }
+
+/* ❌ 错误：裸选择器会被公共样式覆盖，也可能污染公共样式的页面 */
+.card { padding: 16px; }
+header { height: 64px; }
+```
+
+- 项目自研样式选择器统一以 `#{当前项目 id}` 为最外层作用域
+- 禁止在项目内直接写全局裸选择器（`body` / `header` / `.card` 等）
+- 组件库内部样式无需加前缀，仅约束项目自研样式
+
 ## 前置条件
 
 ### 1. 基础知识
@@ -26,6 +80,7 @@ description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm
 - 了解 CSS 变量（Custom Properties）的使用方法
 - 了解响应式设计基础
 - 了解 jQuery（PortalUI 交互组件依赖）
+- **Vue 3 工程：了解 OpenTiny（TinyVue）组件库用法（见上方「OpenTiny 组件库」）**
 
 ### 2. 外部依赖
 ```html
@@ -128,11 +183,13 @@ huawei-cloud-web-ui/
 1. 先读取 `references/getting-started.md` 了解引入方式，读取 `references/tokens/` 下所有文件了解设计变量
 2. 根据页面类型参考 `references/layouts/page-structure.md` 确定页面骨架，用 `references/layouts/floor.md` 组织楼层
 3. 从 `references/components/` 中选取所需组件
-4. 需要可参数化模板时，参考 `references/xtemplate.md` 使用 XTemplate 语法
-5. 参考 `references/examples/` 中的示例代码生成完整页面
-6. 所有样式使用 CSS 变量（`var(--por-xxx)`）确保与官网设计系统一致
-7. 涉及交互的组件（轮播、页签、折叠、弹窗等）需引入 `theme-token.js` 并调用对应 jQuery 初始化方法
-8. **开发者官网（developer.huaweicloud.com）场景页面：默认接入公共开发者页头 `<hd-header>`**（顺序与兜底见 [导航 / 页头](references/components/navigation.md)），不要自研页头；仅在无法接入公共页头时才退回 [登录模式页头](references/components/header-login.md)
+4. **能用 OpenTiny（TinyVue）组件实现的，不要用 HTML 标签实现**；Vue 3 工程先加载 `tiny-vue-skill`（`npx skills add opentiny/agent-skills`），按组件优先原则选型
+5. 需要可参数化模板时，参考 `references/xtemplate.md` 使用 XTemplate 语法
+6. 参考 `references/examples/` 中的示例代码生成完整页面
+7. 所有样式使用 CSS 变量（`var(--por-xxx)`）确保与官网设计系统一致
+8. **项目内部自研 CSS 统一加 `#{当前项目 id}` 前缀做样式隔离**，禁止全局裸选择器
+9. 涉及交互的组件（轮播、页签、折叠、弹窗等）需引入 `theme-token.js` 并调用对应 jQuery 初始化方法
+10. **开发者官网（developer.huaweicloud.com）场景页面：默认接入公共开发者页头 `<hd-header>`**（顺序与兜底见 [导航 / 页头](references/components/navigation.md)），不要自研页头；仅在无法接入公共页头时才退回 [登录模式页头](references/components/header-login.md)
 
 ### 2. 快速开始
 
@@ -250,6 +307,11 @@ huawei-cloud-web-ui/
 - **避免深层嵌套**：CSS 选择器不超过 3 层
 - **使用 transform 和 opacity**：动画优先使用这两个属性
 
+### 7. 组件优先与样式隔离（强制）
+- **能用 OpenTiny 组件实现的，不要用 HTML 标签实现**：按钮/表格/表单/输入/下拉/日期/弹窗等一律用 `<tiny-*>` 组件，禁止用原生标签手写同等能力
+- **项目内部 CSS 样式统一加 `#{当前项目 id}` 前缀**：如 `#my-project .card { }`，避免被 `global.min.css` / `developer-common.css` / PortalUI 等公共样式污染，同时避免污染其它页面
+- **禁止全局裸选择器**：项目内不得直接写 `body` / `header` / `.card` 等无前缀选择器
+
 ## 常见问题（FAQ）
 
 ### Q1: CSS 变量不生效怎么办？
@@ -307,6 +369,7 @@ A: 遵循以下实践：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.3.0 | 2026-10-13 | 新增「OpenTiny 组件库（组件优选）」：Vue 3 工程优先用 OpenTiny（TinyVue）组件、给出 `npx skills add opentiny/agent-skills --list` 安装方式与组件选型对照表；新增「样式隔离规范」：项目内部 CSS 统一加 `#{当前项目 id}` 前缀避免公共样式污染；在 使用指南 / 最佳实践 / 前置条件 同步两条强制原则 |
 | 2.2.2 | 2026-09-28 | 明确**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**：统一 SKILL（描述/使用场景/使用指南/文件结构/参考文档）、navigation.md 接入策略、header-login.md 措辞为「默认接入」，自研页头为备选 |
 | 2.2.1 | 2026-09-28 | 全量校对（比对 cnpm-baseui 3.0.17 实际 CSS）：移除不存在的类名 `por-native`/`por-tips`/`por-modal-text`/`por-anchor-slide`/`por-rate` 及虚构组件「图片查看器」(img-viewer.md)；标注 banner 轮播的开发者站自定义类；修正 `#1476ff`、`zindex-fixed` Token、卡片圆角 `2px`、default 按钮 padding、`textOverflow` 作用域；`page-structure.md`/`examples` 开发者站模板改接公共页头；统一 desktop-first 表述 |
 | 2.2.0 | 2026-09-28 | ① 页头改为**优先接入华为云开发者公共页头** `<hd-header>`（navigation.md 重写：head 固定加载顺序、`?url=`/`window.developerHeaderUrl` 双通道同 URL、登录/登出链接轮询兜底），自研页头降为备选（header-login.md）；② 修正按钮圆角：`cnpm-baseui@3.0.17` 起 `.por-btn` 默认为**胶囊圆角**（半径 = 高度 24/32/40/48px，`--por-button-size-radius-*`），旧文档 `2px` 有误（buttons.md / shadows-radii.md / SKILL.md） |
