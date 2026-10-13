@@ -1,0 +1,4 @@
+interface:
+  display_name: "华为云前端开发 Skill"
+  short_description: "华为云前端开发（合并版）：脚手架、官网 UI 与组件、页头页脚、IAM SSO 登录、表单、响应式布局、Vue3 代码规范；OpenTiny 组件优先 + 项目样式 id 前缀隔离"
+  default_prompt: "使用 $huawei-cloud-web-develop 开发一个华为云风格的前端页面"
