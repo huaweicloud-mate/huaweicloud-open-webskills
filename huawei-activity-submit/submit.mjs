@@ -43,7 +43,7 @@ const BASES = {
   prod: 'https://open-dataset.huaweicloud.com/api/v1/hdopenservice/agent',
 }
 
-const ACTIVITY_CODE = 'open-capability-2026'
+const ACTIVITY_CODE = 'open-capability-2026-1024'
 const SANDBOX_RE = /^https:\/\/[^/]*devbridge-s2\.hwtunnel\.com(\/|$)/
 const LABEL = {
   beginner: '沙箱部署',

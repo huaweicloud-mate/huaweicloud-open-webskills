@@ -1,6 +1,6 @@
 ---
 name: huawei-activity-submit
-description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。用户提示词提到“测试环境/测试/test”时走测试环境接口（--env test），否则默认走生产接口。仅用于调用接口，不涉及任何页面/浏览器操作.
+description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。用户提示词提到“测试环境/测试/test”时走测试环境接口（--env test），否则默认走生产接口。仅用于调用接口，不涉及任何页面/浏览器操作.
 ---
 
 # 华为云开放能力闯关 · 作品提交 Skill
@@ -11,7 +11,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 - 用户说“把作品/成果/沙箱链接提交到活动” “帮我提交闯关成果” “提交沙箱域名/公网地址” 等。
 - 活动已生成沙箱作品链接（前端站点）和/或 ECS 公网地址，需要提交到对应步骤。
-- 仅针对活动 `activity_code = open-capability-2026`。
+- 仅针对活动 `activity_code = open-capability-2026-1024`。
 
 ## 提交接口
 
@@ -37,7 +37,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 ```json
 {
-  "activity_code": "open-capability-2026",
+  "activity_code": "open-capability-2026-1024",
   "milestone": "beginner | intermediate",
   "work_link": "https://xxx.devbridge-s2.hwtunnel.com",
   "api_link": "http://<ECS_EIP>/hc-activity/index.html",
