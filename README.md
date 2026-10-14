@@ -17,6 +17,7 @@
 | huawei-cloud-web-ui | 华为云官网 UI 设计规范（cnpm-baseui 3.0.17）：设计 Token（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉/单选复选/日期/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局（楼层/栅格）、页头接入（开发者官网场景默认接入公共 `<hd-header>`）、XTemplate 与完整示例 |
 | **huawei-cloud-web-develop** | **（合并新增）开发阶段入口技能**：合并 scaffold/ui/nav-footer/login/form/responsive-layout/code-style，端到端开发，内置「OpenTiny 组件优先」「项目 CSS 加 `#项目id` 前缀」两条强制规则 |
 | **huawei-cloud-web-review** | **（合并新增）测试/QA 阶段入口技能**：合并 compatibility/performance + code-style 评审清单，做兼容性、性能与代码规范审查（暂不含 UI 审查） |
+| huawei-activity-submit | 华为云开放能力线上闯关挑战作品提交（Agent 接口 `{base}/submit-activity-work`，AK/SK 请求头）：按顺序提交「沙箱部署」(milestone=beginner) 与「ECS 持久化部署」(milestone=intermediate)，成功后回报对应积分；沙箱完成后可选发布到作品展览馆的闯关活动 |
 
 ## 阶段合并技能（新增）
 
