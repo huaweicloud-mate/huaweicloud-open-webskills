@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-ui
-description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**Vue 3 工程优先使用 OpenTiny（TinyVue）组件库，能用组件实现的不要用 HTML 标签手写（安装 `npx skills add opentiny/agent-skills`）**；**项目内部 CSS 样式统一加 `#当前项目id` 前缀做样式隔离**；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
+description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/顶部广告横幅/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**Vue 3 工程优先使用 OpenTiny（TinyVue）组件库，能用组件实现的不要用 HTML 标签手写（安装 `npx skills add opentiny/agent-skills`）**；**项目内部 CSS 样式统一加 `#当前项目id` 前缀做样式隔离**；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
 ---
 
 # 华为云官网 UI 设计规范 Skill
@@ -165,6 +165,7 @@ huawei-cloud-web-ui/
     │   ├── fixed-table.md      # 固定表头表格
     │   ├── navigation.md       # 导航 / 页头（开发者官网场景默认接入公共页头 <hd-header>）
     │   ├── header-login.md     # 登录模式页头（备选自研页头，PC + 移动端登录区）
+    │   ├── ad-banner.md        # 顶部广告横幅（自定义组件，纯 CSS）
     │   ├── banner.md           # Banner 轮播
     │   └── footer.md           # 页脚
     ├── layouts/                # 布局系统
@@ -369,6 +370,7 @@ A: 遵循以下实践：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.4.0 | 2026-10-15 | 新增「顶部广告横幅」组件（`references/components/ad-banner.md`）：促销/活动横幅，纯 CSS（自定义组件、非 baseui 类），含结构/样式/响应式/配色/交互/无障碍/设计原则；统一品牌红 `#C7000B`、统一样式隔离 `#当前项目id` 前缀 |
 | 2.3.0 | 2026-10-13 | 新增「OpenTiny 组件库（组件优选）」：Vue 3 工程优先用 OpenTiny（TinyVue）组件、给出 `npx skills add opentiny/agent-skills --list` 安装方式与组件选型对照表；新增「样式隔离规范」：项目内部 CSS 统一加 `#{当前项目 id}` 前缀避免公共样式污染；在 使用指南 / 最佳实践 / 前置条件 同步两条强制原则 |
 | 2.2.2 | 2026-09-28 | 明确**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**：统一 SKILL（描述/使用场景/使用指南/文件结构/参考文档）、navigation.md 接入策略、header-login.md 措辞为「默认接入」，自研页头为备选 |
 | 2.2.1 | 2026-09-28 | 全量校对（比对 cnpm-baseui 3.0.17 实际 CSS）：移除不存在的类名 `por-native`/`por-tips`/`por-modal-text`/`por-anchor-slide`/`por-rate` 及虚构组件「图片查看器」(img-viewer.md)；标注 banner 轮播的开发者站自定义类；修正 `#1476ff`、`zindex-fixed` Token、卡片圆角 `2px`、default 按钮 padding、`textOverflow` 作用域；`page-structure.md`/`examples` 开发者站模板改接公共页头；统一 desktop-first 表述 |
@@ -416,6 +418,7 @@ A: 遵循以下实践：
 | [固定表头表格](references/components/fixed-table.md) | 常规表格 |
 | [导航 / 页头](references/components/navigation.md) | 开发者官网场景默认接入公共页头 `<hd-header>`（加载顺序/双通道/登录链接兜底），自研页头为备选 |
 | [登录模式页头](references/components/header-login.md) | 备选自研页头：PC + 移动端登录区（登录/用户菜单/全宽面板） |
+| [顶部广告横幅](references/components/ad-banner.md) | 促销/活动横幅（自定义组件，纯 CSS） |
 | [Banner 组件](references/components/banner.md) | Hero Banner、轮播图 |
 | [页脚组件](references/components/footer.md) | 页脚布局、链接 |
 | [页面结构](references/layouts/page-structure.md) | 页面骨架、区块划分 |

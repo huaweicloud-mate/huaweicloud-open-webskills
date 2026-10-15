@@ -66,7 +66,7 @@ SFC 结构、目录与命名、组件设计（props/emits、单向数据流、�
 | `references/scaffold.md` | 工程脚手架完整步骤与文件模板 |
 | `references/ui/overview.md` | UI 规范总览与索引 |
 | `references/ui/tokens/` | 设计 Token（色彩/排版/间距/阴影圆角/层级/工具类） |
-| `references/ui/components/` | 组件库（按钮/输入/下拉/复选/日期/弹窗/提示/标签/面包屑/分页/轮播/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/表格/文本/图标） |
+| `references/ui/components/` | 组件库（按钮/输入/下拉/复选/日期/弹窗/提示/标签/面包屑/分页/轮播/顶部广告横幅/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/表格/文本/图标） |
 | `references/ui/layouts/` | 页面结构、栅格、楼层 |
 | `references/ui/examples/` | 整页示例（原 `.html`，现为 Markdown 代码块） |
 | `references/nav-footer/overview.md`、`customization.md` | 页头/页脚用法与定制 |

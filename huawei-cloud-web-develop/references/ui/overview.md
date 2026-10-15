@@ -162,6 +162,7 @@ huawei-cloud-web-ui/
     │   ├── fixed-table.md      # 固定表头表格
     │   ├── navigation.md       # 导航 / 页头（开发者官网场景默认接入公共页头 <hd-header>）
     │   ├── header-login.md     # 登录模式页头（备选自研页头，PC + 移动端登录区）
+    │   ├── ad-banner.md        # 顶部广告横幅（自定义组件，纯 CSS）
     │   ├── banner.md           # Banner 轮播
     │   └── footer.md           # 页脚
     ├── layouts/                # 布局系统
@@ -169,8 +170,8 @@ huawei-cloud-web-ui/
     │   ├── grid.md             # 栅格系统
     │   └── floor.md            # 楼层（Section）容器
     └── examples/               # 示例代码
-        ├── homepage-dev.html   # 开发者官网首页示例
-        └── homepage-main.html  # 主站首页示例
+        ├── homepage-dev.md     # 开发者官网首页示例
+        └── homepage-main.md    # 主站首页示例
 ```
 
 ## 使用指南
@@ -413,13 +414,14 @@ A: 遵循以下实践：
 | [固定表头表格](references/components/fixed-table.md) | 常规表格 |
 | [导航 / 页头](references/components/navigation.md) | 开发者官网场景默认接入公共页头 `<hd-header>`（加载顺序/双通道/登录链接兜底），自研页头为备选 |
 | [登录模式页头](references/components/header-login.md) | 备选自研页头：PC + 移动端登录区（登录/用户菜单/全宽面板） |
+| [顶部广告横幅](references/components/ad-banner.md) | 促销/活动横幅（自定义组件，纯 CSS） |
 | [Banner 组件](references/components/banner.md) | Hero Banner、轮播图 |
 | [页脚组件](references/components/footer.md) | 页脚布局、链接 |
 | [页面结构](references/layouts/page-structure.md) | 页面骨架、区块划分 |
 | [栅格系统](references/layouts/grid.md) | 栅格布局、响应式栅格 |
 | [楼层](references/layouts/floor.md) | Section 楼层容器 |
-| [开发者站首页示例](references/examples/homepage-dev.html) | 完整的 HTML 示例代码 |
-| [主站首页示例](references/examples/homepage-main.html) | 完整的 HTML 示例代码 |
+| [开发者站首页示例](references/examples/homepage-dev.md) | 完整的 HTML 示例代码 |
+| [主站首页示例](references/examples/homepage-main.md) | 完整的 HTML 示例代码 |
 
 ## 注意事项
 
