@@ -357,8 +357,12 @@ async function main() {
 
   // 记录已提交链接 + 展览馆发布状态
   const links = readLinks()
-  if (ms === 'beginner') links.sandbox = workLink
-  else if (ms === 'intermediate') links.ecs = apiLink
+  if (ms === 'beginner') {
+    links.sandbox = workLink
+    links.galleryPublished = false // 沙箱部署后始终询问 → 重置状态
+  } else if (ms === 'intermediate') {
+    links.ecs = apiLink
+  }
   const galleryDone = Boolean(links.galleryPublished)
   writeLinks(links)
 
@@ -383,12 +387,10 @@ async function main() {
     }
   }
 
-  // 作品展览馆询问：沙箱后询问；若未发布，ECS 后再问一次；已发布则不再询问
+  // 作品展览馆询问：沙箱后始终询问；沙箱未发布则 ECS 后再问一次；沙箱已发布则 ECS 不再询问
   if (ms === 'beginner') {
     console.log(
-      galleryDone
-        ? '沙箱部署已完成。（作品展览馆此前已发布，跳过询问。）'
-        : '沙箱部署已完成。请询问用户是否将作品发布到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。若用户同意并发布成功，请运行 `node submit.mjs --gallery-published` 记录，避免 ECS 完成后重复询问。',
+      '沙箱部署已完成。请询问用户是否将作品发布到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。若用户同意并发布成功，请运行 `node submit.mjs --gallery-published` 记录；若未发布，ECS 完成后会再询问一次。',
     )
   }
   if (ms === 'intermediate') {
