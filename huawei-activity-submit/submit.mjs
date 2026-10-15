@@ -35,6 +35,7 @@
 //   --base <url>      直接覆盖接口基地址
 //   --dry-run         只打印将提交的请求头/请求体，不真正提交
 //   --no-qr           提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
+//   --gallery-published 记录“作品展览馆已发布”（供后续步骤判断是否还需询问）
 //   --help            显示帮助
 
 import fs from 'node:fs'
@@ -74,7 +75,7 @@ function parseArgs(argv) {
     const a = argv[i]
     if (!a.startsWith('--')) continue
     const key = a.slice(2)
-    if (key === 'dry-run' || key === 'help') {
+    if (key === 'dry-run' || key === 'help' || key === 'no-qr' || key === 'gallery-published') {
       args[key] = true
       continue
     }
@@ -264,6 +265,16 @@ function fail(msg) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2))
+
+  // 记录「作品展览馆已发布」状态（供后续步骤判断是否还需询问）
+  if (args['gallery-published']) {
+    const links = readLinks()
+    links.galleryPublished = true
+    writeLinks(links)
+    console.log('已记录：作品展览馆已发布（后续步骤不再重复询问）。')
+    return
+  }
+
   if (args.help || (!args.milestone && !args['dry-run'])) {
     printHelp()
     return
@@ -344,13 +355,15 @@ async function main() {
   )
   console.log(`\n提交成功，已获得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
 
-  // 生成二维码：记录已提交链接，并为「沙箱链接 + ECS 链接」生成二维码 PNG
-  if (!args['no-qr']) {
-    const links = readLinks()
-    if (ms === 'beginner') links.sandbox = workLink
-    else if (ms === 'intermediate') links.ecs = apiLink
-    writeLinks(links)
+  // 记录已提交链接 + 展览馆发布状态
+  const links = readLinks()
+  if (ms === 'beginner') links.sandbox = workLink
+  else if (ms === 'intermediate') links.ecs = apiLink
+  const galleryDone = Boolean(links.galleryPublished)
+  writeLinks(links)
 
+  // 生成二维码：为「沙箱链接 + ECS 链接」生成二维码 PNG
+  if (!args['no-qr']) {
     const items = [
       ['沙箱部署链接', links.sandbox, 'sandbox'],
       ['ECS 持久化部署链接', links.ecs, 'ecs'],
@@ -370,11 +383,21 @@ async function main() {
     }
   }
 
+  // 作品展览馆询问：沙箱后询问；若未发布，ECS 后再问一次；已发布则不再询问
   if (ms === 'beginner') {
-    console.log('沙箱部署已完成。请询问用户是否将作品提交到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。')
+    console.log(
+      galleryDone
+        ? '沙箱部署已完成。（作品展览馆此前已发布，跳过询问。）'
+        : '沙箱部署已完成。请询问用户是否将作品发布到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。若用户同意并发布成功，请运行 `node submit.mjs --gallery-published` 记录，避免 ECS 完成后重复询问。',
+    )
   }
   if (ms === 'intermediate') {
-    console.log('活动两步已全部完成（allCompleted=true）。请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
+    console.log(
+      galleryDone
+        ? 'ECS 持久化部署已完成（allCompleted=true）。（作品展览馆此前已发布，不再询问。）'
+        : 'ECS 持久化部署已完成（allCompleted=true）。此前未发布到作品展览馆，请再询问用户是否发布（用户可选）；发布成功后运行 `node submit.mjs --gallery-published` 记录。',
+    )
+    console.log('请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
   }
 }
 
@@ -392,6 +415,7 @@ function printHelp() {
   --region <region>      intermediate 必填，ECS 的 region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
   --no-qr                提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
+  --gallery-published    记录“作品展览馆已发布”，后续步骤不再重复询问（发布成功后运行一次）
   --env prod|test        接口环境（默认 prod；提示词含“测试环境”时用 test，等价于 HW_ACTIVITY_ENV=test）
   --base <url>           覆盖接口基地址
   --dry-run              仅打印将提交的请求头与请求体
