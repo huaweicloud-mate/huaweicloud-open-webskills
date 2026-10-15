@@ -6,6 +6,7 @@
 //   base = https://open-dataset.huaweicloud.com/api/v1/hdopenservice/agent    （prod，默认）
 //          https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent  （test）
 //   请求头（鉴权）：X-HW-AK（必）、X-HW-SK（必）、X-HW-Security-Token（可选）
+//   ECS 步骤（intermediate）额外请求头：X-HW-PROJECT-ID、X-HW-REGION（上传 ECS 的 Project ID 与 region）
 //   请求体 / 响应与 /user/submit-activity-work 一致：
 //     { activity_code, milestone, work_link?, api_link?, summary? }
 //
@@ -17,7 +18,7 @@
 //
 // 用法示例：
 //   node submit.mjs --milestone beginner --work-link https://xxxx-3000.devbridge-s2.hwtunnel.com --summary "..."
-//   node submit.mjs --milestone intermediate --api-link http://<ECS_EIP>/ --summary "..."
+//   node submit.mjs --milestone intermediate --api-link http://<ECS_EIP>/hc-activity/index.html --project-id <PROJECT_ID> --region cn-north-4 --summary "..."
 //
 // 凭证（优先级：命令行参数 > 环境变量 > 凭证文件）：
 //   --ak <AK> / --sk <SK> / --security-token <token>
@@ -29,6 +30,8 @@
 // 其他：
 //   --env prod|test   选择环境（默认 prod；用户提示词含“测试环境/测试/test”时用 test）
 //   HW_ACTIVITY_ENV   环境变量，等价于 --env（=test 时走测试接口）
+//   --project-id <id> ECS 步骤：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
+//   --region <region> ECS 步骤：region（也支持 HW_REGION / hcloud 配置）
 //   --base <url>      直接覆盖接口基地址
 //   --dry-run         只打印将提交的请求体，不真正提交
 //   --help            显示帮助
@@ -118,12 +121,42 @@ function loadCreds(args) {
   return { ak, sk, securityToken }
 }
 
-async function call(base, pathname, { method = 'GET', body, creds } = {}) {
+function readHcloudProfile() {
+  try {
+    const f = path.join(os.homedir(), '.hcloud', 'config.json')
+    if (!fs.existsSync(f)) return {}
+    const j = JSON.parse(fs.readFileSync(f, 'utf8'))
+    const list = Array.isArray(j.profiles) ? j.profiles : []
+    const cur = list.find((p) => p.name === (j.current || 'default')) || list[0]
+    return cur ? { projectId: cur.projectId || '', region: cur.region || '' } : {}
+  } catch {
+    return {}
+  }
+}
+
+// ECS 步骤所需的 Project ID / region（优先级：命令行参数 > 环境变量 > hcloud 配置）
+function loadProjectRegion(args) {
+  let projectId = args['project-id'] || envFirst(['HW_PROJECT_ID', 'HUAWEICLOUD_PROJECT_ID'])
+  let region = args.region || envFirst(['HW_REGION', 'HUAWEICLOUD_REGION'])
+  if (!projectId || !region) {
+    const h = readHcloudProfile()
+    projectId = projectId || h.projectId || ''
+    region = region || h.region || ''
+  }
+  return { projectId, region }
+}
+
+async function call(base, pathname, { method = 'GET', body, creds, extraHeaders } = {}) {
   const headers = { Accept: 'application/json' }
   if (body) headers['Content-Type'] = 'application/json'
   if (creds?.ak) headers['X-HW-AK'] = creds.ak
   if (creds?.sk) headers['X-HW-SK'] = creds.sk
   if (creds?.securityToken) headers['X-HW-Security-Token'] = creds.securityToken
+  if (extraHeaders) {
+    for (const k of Object.keys(extraHeaders)) {
+      if (extraHeaders[k]) headers[k] = extraHeaders[k]
+    }
+  }
   const res = await fetch(base + pathname, {
     method,
     headers,
@@ -207,7 +240,19 @@ async function main() {
 
   if (ms === 'intermediate' && apiLink) apiLink = ensureIndexHtml(apiLink)
 
+  // ECS 步骤：附加 X-HW-PROJECT-ID / X-HW-REGION 请求头（上传 ECS 的 Project ID 与 region）
+  const { projectId, region } = loadProjectRegion(args)
+  const extraHeaders = {}
+  if (ms === 'intermediate') {
+    if (projectId) extraHeaders['X-HW-PROJECT-ID'] = projectId
+    if (region) extraHeaders['X-HW-REGION'] = region
+  }
+
   const errs = validate(ms, workLink, apiLink)
+  if (ms === 'intermediate') {
+    if (!projectId) errs.push('缺少 ECS Project ID：请传 --project-id，或设 HW_PROJECT_ID，或确保 hcloud 配置了 projectId')
+    if (!region) errs.push('缺少 ECS region：请传 --region，或设 HW_REGION，或确保 hcloud 配置了 region')
+  }
   if (summary && summary.length > 500) errs.push('作品说明不能超过 500 字')
   if (errs.length) {
     fail('参数校验未通过：\n- ' + errs.join('\n- '))
@@ -216,7 +261,7 @@ async function main() {
 
   const body = buildBody(ms, workLink, apiLink, summary)
   if (args['dry-run']) {
-    console.log(JSON.stringify({ base, body }, null, 2))
+    console.log(JSON.stringify({ base, headers: extraHeaders, body }, null, 2))
     return
   }
   if (!hasCreds(creds)) {
@@ -224,7 +269,7 @@ async function main() {
     return
   }
 
-  const r = await call(base, '/submit-activity-work', { method: 'POST', body, creds })
+  const r = await call(base, '/submit-activity-work', { method: 'POST', body, creds, extraHeaders })
   if (r.status === 401 || r.status === 403) {
     fail(`鉴权失败（HTTP ${r.status}），请检查 AK/SK（及临时凭证的 SecurityToken）是否正确`)
     return
@@ -262,16 +307,18 @@ function printHelp() {
   console.log(`华为云开放能力闯关 · 作品提交脚本（Agent 接口 / AK-SK 鉴权）
 
 用法：
-  node submit.mjs --milestone <beginner|intermediate> [--work-link <url>] [--api-link <url>] [--summary "<text>"]
+  node submit.mjs --milestone <beginner|intermediate> [--work-link <url>] [--api-link <url>] [--project-id <id>] [--region <region>] [--summary "<text>"]
 
 参数：
   --milestone <ms>       步骤：beginner（沙箱部署）/ intermediate（ECS 持久化部署）；也接受别名 sandbox / ecs
   --work-link <url>      beginner 必填，沙箱域名 URL（https://xxx.devbridge-s2.hwtunnel.com 形式）
   --api-link <url>       intermediate 必填，公网访问地址（http(s):// 开头且含 index.html，如 http://<EIP>/hc-activity/index.html）
+  --project-id <id>      intermediate 必填，ECS 的 Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
+  --region <region>      intermediate 必填，ECS 的 region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
   --env prod|test        接口环境（默认 prod；提示词含“测试环境”时用 test，等价于 HW_ACTIVITY_ENV=test）
   --base <url>           覆盖接口基地址
-  --dry-run              仅打印将提交的请求体
+  --dry-run              仅打印将提交的请求头与请求体
 
 凭证（优先级 参数 > 环境变量 > 文件）：
   --ak <AK> / --sk <SK> / --security-token <token>

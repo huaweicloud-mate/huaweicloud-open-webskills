@@ -31,6 +31,11 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 - `X-HW-SK`（必填）：华为云 Secret Key
 - `X-HW-Security-Token`（可选）：使用 STS 临时凭证时必填
 
+**ECS 步骤附加请求头**（仅 `intermediate`（ECS 持久化部署）提交时携带）：
+
+- `X-HW-PROJECT-ID`：ECS 的 Project ID
+- `X-HW-REGION`：ECS 的 region（如 `cn-north-4`）
+
 > 凭证优先级：命令行参数 > 环境变量（`HW_ACCESS_KEY`/`HW_SECRET_KEY`/`HW_SECURITY_TOKEN`，兼容 `HUAWEICLOUD_SDK_AK`/`HUAWEICLOUD_SDK_SK`/`HUAWEICLOUD_SDK_SECURITY_TOKEN`、`HW_AK`/`HW_SK`）> 凭证文件 `~/.config/hw-activity/credentials.json`（`{"ak":"...","sk":"...","securityToken":"..."}`）> DevKit 统一凭据库 `~/.config/huaweicloud/credentials.json`。**切勿把凭证写入仓库。**
 
 **提交请求体**（`Content-Type: application/json`，与 `/user/submit-activity-work` 一致）：
@@ -93,9 +98,10 @@ node submit.mjs --milestone beginner \
   --work-link https://abcd1234-3000.devbridge-s2.hwtunnel.com \
   --summary "2048 单文件小游戏"
 
-# 2) ECS 持久化部署：提交公网访问地址（milestone=intermediate；链接需含 index.html）
+# 2) ECS 持久化部署：提交公网访问地址（milestone=intermediate；链接需含 index.html；带 ECS 的 Project ID / region）
 node submit.mjs --milestone intermediate \
-  --api-link http://<ECS_EIP>/hc-activity/index.html
+  --api-link http://<ECS_EIP>/hc-activity/index.html \
+  --project-id <PROJECT_ID> --region cn-north-4
 ```
 
 凭证可通过命令行参数或环境变量提供：
@@ -142,6 +148,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 
 - **只调接口，不做页面操作**：不要驱动浏览器、不要模拟点击页面表单。
 - **顺序提交**：步骤必须按 `beginner`（沙箱）→ `intermediate`（ECS）依次提交，接口会校验顺序。
+- **ECS 步骤附加请求头**：`intermediate`（ECS 持久化部署）提交时需携带 `X-HW-PROJECT-ID`（ECS 的 Project ID）与 `X-HW-REGION`（ECS 的 region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。
 - **凭证安全**：AK/SK（及临时凭证的 SecurityToken）仅用于本次会话，不要写入仓库或提交到版本库；优先用环境变量或凭证文件，避免明文出现在命令行历史。
 - **提交不可重复使用**：同一地址提交后即与该账户绑定，勿重复提交相同链接。
