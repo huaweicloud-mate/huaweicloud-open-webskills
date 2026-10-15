@@ -33,7 +33,8 @@
 //   --project-id <id> ECS 步骤：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
 //   --region <region> ECS 步骤：region（也支持 HW_REGION / hcloud 配置）
 //   --base <url>      直接覆盖接口基地址
-//   --dry-run         只打印将提交的请求体，不真正提交
+//   --dry-run         只打印将提交的请求头/请求体，不真正提交
+//   --no-qr           提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
 //   --help            显示帮助
 
 import fs from 'node:fs'
@@ -53,6 +54,11 @@ const LABEL = {
   intermediate: 'ECS 持久化部署',
 }
 const POINTS = { beginner: 1000, intermediate: 2000 }
+
+// 提交成功后生成二维码：链接存档 + QR 图片目录
+const STATE_DIR = path.join(os.homedir(), '.config', 'hw-activity')
+const LINKS_FILE = path.join(STATE_DIR, 'links.json')
+const QR_DIR = path.join(STATE_DIR, 'qr')
 
 // 步骤别名 → 后端 milestone 值
 const MILESTONE_ALIAS = {
@@ -144,6 +150,39 @@ function loadProjectRegion(args) {
     region = region || h.region || ''
   }
   return { projectId, region }
+}
+
+function readLinks() {
+  try {
+    return JSON.parse(fs.readFileSync(LINKS_FILE, 'utf8')) || {}
+  } catch {
+    return {}
+  }
+}
+
+function writeLinks(o) {
+  try {
+    fs.mkdirSync(STATE_DIR, { recursive: true })
+    fs.writeFileSync(LINKS_FILE, JSON.stringify(o, null, 2), 'utf8')
+  } catch {
+    /* 忽略写入失败 */
+  }
+}
+
+// 用 api.qrserver.com 生成二维码 PNG（无第三方依赖，仅需联网）；失败返回 null
+async function genQrPng(url, outPath) {
+  const api = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(url)}`
+  try {
+    fs.mkdirSync(path.dirname(outPath), { recursive: true })
+    const res = await fetch(api, { signal: AbortSignal.timeout(15000) })
+    if (!res.ok) return null
+    const buf = Buffer.from(await res.arrayBuffer())
+    if (!buf.length) return null
+    fs.writeFileSync(outPath, buf)
+    return outPath
+  } catch {
+    return null
+  }
 }
 
 async function call(base, pathname, { method = 'GET', body, creds, extraHeaders } = {}) {
@@ -298,6 +337,33 @@ async function main() {
     ),
   )
   console.log(`\n提交成功，已获得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
+
+  // 生成二维码：记录已提交链接，并为「沙箱链接 + ECS 链接」生成二维码 PNG
+  if (!args['no-qr']) {
+    const links = readLinks()
+    if (ms === 'beginner') links.sandbox = workLink
+    else if (ms === 'intermediate') links.ecs = apiLink
+    writeLinks(links)
+
+    const items = [
+      ['沙箱部署链接', links.sandbox, 'sandbox'],
+      ['ECS 持久化部署链接', links.ecs, 'ecs'],
+    ].filter((x) => x[1])
+
+    if (items.length) {
+      console.log('\n二维码（可扫描）：')
+      for (const [label, url, key] of items) {
+        const png = await genQrPng(url, path.join(QR_DIR, key + '.png'))
+        console.log(`- ${label}: ${url}`)
+        console.log(
+          png
+            ? `  二维码图片: ${png}`
+            : `  二维码图片生成失败（网络受限），可用在线二维码: https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(url)}`,
+        )
+      }
+    }
+  }
+
   if (ms === 'beginner') {
     console.log('沙箱部署已完成。请询问用户是否将作品提交到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。')
   }
@@ -316,6 +382,7 @@ function printHelp() {
   --project-id <id>      intermediate 必填，ECS 的 Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
   --region <region>      intermediate 必填，ECS 的 region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
+  --no-qr                提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
   --env prod|test        接口环境（默认 prod；提示词含“测试环境”时用 test，等价于 HW_ACTIVITY_ENV=test）
   --base <url>           覆盖接口基地址
   --dry-run              仅打印将提交的请求头与请求体
