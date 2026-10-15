@@ -46,6 +46,18 @@
 
 ## 安装
 
+### 方式一：npx 安装（推荐）
+
+```bash
+npx skills add https://github.com/huaweicloud-mate/huaweicloud-open-webskills.git --skill huawei-activity-submit -y
+```
+
+> GitCode/Gitee 等非 GitHub/GitLab 仓库，URL **必须以 `.git` 结尾**；否则会被当作网页下载而报 `Downloaded URL is not a valid SKILL.md file or supported archive`。GitHub 网页 URL 可省略 `.git`，但统一带 `.git` 更稳妥。
+>
+> 只装单个技能用 `--skill <技能名>`（本仓库有多个技能，加 `--skill` 只装指定那一个）。
+
+### 方式二：手动复制
+
 将需要的技能目录复制到对应工具的 skills 目录：
 
 - Codex：`~/.codex/skills/<skill-name>/`
