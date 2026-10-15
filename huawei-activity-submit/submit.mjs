@@ -200,6 +200,7 @@ async function call(base, pathname, { method = 'GET', body, creds, extraHeaders 
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    signal: AbortSignal.timeout(30000),
   })
   const text = await res.text()
   let json = null
@@ -269,10 +270,15 @@ async function main() {
   }
 
   const env = (args.env || process.env.HW_ACTIVITY_ENV || 'prod').toLowerCase()
-  const base = args.base || BASES[env === 'test' ? 'test' : 'prod']
+  if (env !== 'prod' && env !== 'test') {
+    fail(`参数校验未通过：\n- --env / HW_ACTIVITY_ENV 只支持 prod 或 test（收到 "${env}"）`)
+    return
+  }
+  const base = args.base || BASES[env]
   const creds = loadCreds(args)
 
-  const ms = MILESTONE_ALIAS[args.milestone] || args.milestone
+  const msArg = (args.milestone || '').toLowerCase()
+  const ms = MILESTONE_ALIAS[msArg] || msArg
   const workLink = args['work-link']
   let apiLink = args['api-link']
   const summary = args.summary
@@ -310,7 +316,7 @@ async function main() {
 
   const r = await call(base, '/submit-activity-work', { method: 'POST', body, creds, extraHeaders })
   if (r.status === 401 || r.status === 403) {
-    fail(`鉴权失败（HTTP ${r.status}），请检查 AK/SK（及临时凭证的 SecurityToken）是否正确`)
+    fail(`鉴权失败（HTTP ${r.status}）：${(r.json && r.json.message) || r.text}（请检查 AK/SK 及临时凭证的 SecurityToken）`)
     return
   }
   if (r.status !== 200 || !r.json) {
@@ -366,6 +372,9 @@ async function main() {
 
   if (ms === 'beginner') {
     console.log('沙箱部署已完成。请询问用户是否将作品提交到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。')
+  }
+  if (ms === 'intermediate') {
+    console.log('活动两步已全部完成（allCompleted=true）。请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
   }
 }
 
