@@ -3,8 +3,7 @@
 //
 // 接口（Agent 版，AK/SK 鉴权）：
 //   POST {base}/submit-activity-work
-//   base = https://open-dataset.huaweicloud.com/api/v1/hdopenservice/agent    （prod，默认）
-//          https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent  （test）
+//   base = https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent   （测试环境，固定；本 skill 不切换环境）
 //   请求头（鉴权）：X-HW-AK（必）、X-HW-SK（必）、X-HW-Security-Token（可选）
 //   ECS 步骤（intermediate）额外请求头：X-HW-PROJECT-ID、X-HW-REGION（上传 ECS 的 Project ID 与 region）
 //   请求体 / 响应与 /user/submit-activity-work 一致：
@@ -28,11 +27,8 @@
 //   兜底：DevKit 统一凭据库 ~/.config/huaweicloud/credentials.json（{"ak","sk","securityToken"}）
 //
 // 其他：
-//   --env prod|test   选择环境（默认 prod；用户提示词含“测试环境/测试/test”时用 test）
-//   HW_ACTIVITY_ENV   环境变量，等价于 --env（=test 时走测试接口）
 //   --project-id <id> ECS 步骤：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
 //   --region <region> ECS 步骤：region（也支持 HW_REGION / hcloud 配置）
-//   --base <url>      直接覆盖接口基地址
 //   --dry-run         只打印将提交的请求头/请求体，不真正提交
 //   --no-qr           提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
 //   --gallery-published 记录“作品展览馆已发布”（供后续步骤判断是否还需询问）
@@ -43,10 +39,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 
-const BASES = {
-  test: 'https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent',
-  prod: 'https://open-dataset.huaweicloud.com/api/v1/hdopenservice/agent',
-}
+const BASE = 'https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent' // 测试环境（固定）
 
 const ACTIVITY_CODE = 'open-capability-2026-1024'
 const SANDBOX_RE = /^https:\/\/[^/]*devbridge-s2\.hwtunnel\.com(\/|$)/
@@ -280,12 +273,7 @@ async function main() {
     return
   }
 
-  const env = (args.env || process.env.HW_ACTIVITY_ENV || 'prod').toLowerCase()
-  if (env !== 'prod' && env !== 'test') {
-    fail(`参数校验未通过：\n- --env / HW_ACTIVITY_ENV 只支持 prod 或 test（收到 "${env}"）`)
-    return
-  }
-  const base = args.base || BASES[env]
+  const base = BASE
   const creds = loadCreds(args)
 
   const msArg = (args.milestone || '').toLowerCase()
@@ -404,7 +392,7 @@ async function main() {
 }
 
 function printHelp() {
-  console.log(`华为云开放能力闯关 · 作品提交脚本（Agent 接口 / AK-SK 鉴权）
+  console.log(`华为云开放能力闯关 · 作品提交脚本（测试环境 / Agent 接口 / AK-SK 鉴权）
 
 用法：
   node submit.mjs --milestone <beginner|intermediate> [--work-link <url>] [--api-link <url>] [--project-id <id>] [--region <region>] [--summary "<text>"]
@@ -418,8 +406,6 @@ function printHelp() {
   --summary <text>       作品说明，≤500 字（可选）
   --no-qr                提交成功后不生成链接二维码（默认生成沙箱/ECS 链接二维码 PNG）
   --gallery-published    记录“作品展览馆已发布”，后续步骤不再重复询问（发布成功后运行一次）
-  --env prod|test        接口环境（默认 prod；提示词含“测试环境”时用 test，等价于 HW_ACTIVITY_ENV=test）
-  --base <url>           覆盖接口基地址
   --dry-run              仅打印将提交的请求头与请求体
 
 凭证（优先级 参数 > 环境变量 > 文件）：

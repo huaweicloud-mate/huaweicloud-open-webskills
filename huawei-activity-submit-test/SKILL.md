@@ -1,9 +1,9 @@
 ---
-name: huawei-activity-submit
-description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后**始终**询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动；若此时未发布则在 ECS（intermediate）完成后再询问一次，若已发布则 ECS 阶段不再询问（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。用户提示词提到“测试环境/测试/test”时走测试环境接口（--env test），否则默认走生产接口。仅用于调用接口，不涉及任何页面/浏览器操作.
+name: huawei-activity-submit-test
+description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后**始终**询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动；若此时未发布则在 ECS（intermediate）完成后再询问一次，若已发布则 ECS 阶段不再询问（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。本 skill 固定使用**测试环境**（现网）接口，无需也**不要**切换环境。仅用于调用接口，不涉及任何页面/浏览器操作.
 ---
 
-# 华为云开放能力闯关 · 作品提交 Skill
+# 华为云开放能力闯关 · 作品提交 Skill（测试环境）
 
 让 Agent 直接调用活动 **Agent 提交接口**（AK/SK 鉴权）完成成果提交（**不做任何页面/浏览器操作**），提交成功后向用户提示已获得的对应步骤积分。
 
@@ -17,13 +17,10 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 | 项 | 值 |
 |----|----|
-| 生产基地址（默认） | `https://open-dataset.huaweicloud.com/api/v1/hdopenservice/agent` |
-| 测试基地址（`--env test`） | `https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent` |
+| 基地址（测试，固定） | `https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent` |
 | 提交 | `POST {base}/submit-activity-work` |
 
-> 前端页面走 `/user/...`（SSO 登录会话）；Agent 走 `/agent/...`（AK/SK 请求头），两者**请求体与响应一致**。生产/测试**路径相同，仅主机不同**；**默认走生产**，用 `--env test` 切测试、`--env prod` 切生产。
-
-> **环境选择规则（重要）**：默认**生产**。当**用户提示词中出现“测试环境 / 测试 / test”等字样**时，改用**测试**接口——提交命令加 `--env test`（或设环境变量 `HW_ACTIVITY_ENV=test`）。其余情况一律走生产，不要主动切测试。
+> 前端页面走 `/user/...`（SSO 登录会话）；Agent 走 `/agent/...`（AK/SK 请求头），两者**请求体与响应一致**。本 skill **固定使用测试环境**基地址，不切换环境。
 
 **鉴权（AK/SK 请求头）**：
 
@@ -82,7 +79,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 1. **收集链接**：沙箱步骤用公开沙箱域名（`https://xxx.devbridge-s2.hwtunnel.com`，部署后先 `curl -sI <URL>` 验证 200）；ECS 步骤用 ECS 公网 HTML 地址（`http://<EIP>/`）。
 2. **确定当前步骤**：按流程判断——先提交沙箱（`beginner`），沙箱通过后再提交 ECS（`intermediate`）；只提交当前已完成的步骤。
 3. **校验链接格式**：脚本会在提交前自动校验（沙箱域名、`http(s)://` 前缀与 `index.html`、说明 ≤500 字）；不通过时会打印原因，修正后再提交。
-4. **执行提交**：运行 `submit.mjs`（见下）。参数与步骤字段对应；**若用户提示词提到“测试环境/测试/test”则加 `--env test`，否则默认走生产**。
+4. **执行提交**：运行 `submit.mjs`（见下）。参数与步骤字段对应（本 skill 固定使用测试环境接口）。
 5. **回报用户**：
    - 成功：提示“提交成功，已获得{沙箱部署 / ECS 持久化部署}对应积分 {1000 / 2000} 分”，并说明该步骤已完成、可继续下一步。
    - 二维码：成功后脚本会记录已提交链接，并**自动为「沙箱链接 + ECS 链接」生成二维码 PNG**（存于 `~/.config/hw-activity/qr/sandbox.png`、`ecs.png`），同时打印图片路径与在线二维码链接，供用户扫码访问；不需要可用 `--no-qr` 关闭。
