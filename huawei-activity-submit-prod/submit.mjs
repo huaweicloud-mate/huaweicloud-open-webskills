@@ -30,7 +30,6 @@
 //   --project-id <id> ECS 步骤：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
 //   --region <region> ECS 步骤：region（也支持 HW_REGION / hcloud 配置）
 //   --dry-run         只打印将提交的请求头/请求体，不真正提交
-//   --no-qr           提交成功后不输出二维码在线链接（默认输出沙箱/ECS 链接的二维码在线链接）
 //   --gallery-published 记录“作品展览馆已发布”（供后续步骤判断是否还需询问）
 //   --help            显示帮助
 
@@ -49,7 +48,7 @@ const LABEL = {
 }
 const POINTS = { beginner: 1000, intermediate: 2000 }
 
-// 提交成功后生成二维码：链接存档 + QR 图片目录
+// 状态文件（记录“作品展览馆已发布”，供后续步骤判断是否还需询问）
 const STATE_DIR = path.join(os.homedir(), '.config', 'hw-activity')
 const LINKS_FILE = path.join(STATE_DIR, 'links.json')
 
@@ -67,7 +66,7 @@ function parseArgs(argv) {
     const a = argv[i]
     if (!a.startsWith('--')) continue
     const key = a.slice(2)
-    if (key === 'dry-run' || key === 'help' || key === 'no-qr' || key === 'gallery-published') {
+    if (key === 'dry-run' || key === 'help' || key === 'gallery-published') {
       args[key] = true
       continue
     }
@@ -160,11 +159,6 @@ function writeLinks(o) {
   } catch {
     /* 忽略写入失败 */
   }
-}
-
-// 二维码在线链接（api.qrserver.com，点开即见二维码图片，可直接扫码）
-function qrUrl(url) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(url)}`
 }
 
 async function call(base, pathname, { method = 'GET', body, creds, extraHeaders } = {}) {
@@ -331,32 +325,11 @@ async function main() {
   )
   console.log(`\n提交成功，已获得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
 
-  // 记录已提交链接 + 展览馆发布状态
+  // 记录展览馆发布状态（供后续步骤判断是否还需询问）
   const links = readLinks()
-  if (ms === 'beginner') {
-    links.sandbox = workLink
-    links.galleryPublished = false // 沙箱部署后始终询问 → 重置状态
-  } else if (ms === 'intermediate') {
-    links.ecs = apiLink
-  }
+  if (ms === 'beginner') links.galleryPublished = false // 沙箱部署后始终询问 → 重置状态
   const galleryDone = Boolean(links.galleryPublished)
   writeLinks(links)
-
-  // 二维码在线链接：为「沙箱链接 + ECS 链接」输出二维码在线链接
-  if (!args['no-qr']) {
-    const items = [
-      ['沙箱部署链接', links.sandbox],
-      ['ECS 持久化部署链接', links.ecs],
-    ].filter((x) => x[1])
-
-    if (items.length) {
-      console.log('\n二维码在线链接（点开即见二维码，可扫码）：')
-      for (const [label, url] of items) {
-        console.log(`- ${label}: ${url}`)
-        console.log(`  二维码: ${qrUrl(url)}`)
-      }
-    }
-  }
 
   // 作品展览馆询问：沙箱后始终询问；沙箱未发布则 ECS 后再问一次；沙箱已发布则 ECS 不再询问
   if (ms === 'beginner') {
@@ -387,7 +360,6 @@ function printHelp() {
   --project-id <id>      intermediate 必填，ECS 的 Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
   --region <region>      intermediate 必填，ECS 的 region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
-  --no-qr                提交成功后不输出二维码在线链接（默认输出沙箱/ECS 链接的二维码在线链接）
   --gallery-published    记录“作品展览馆已发布”，后续步骤不再重复询问（发布成功后运行一次）
   --dry-run              仅打印将提交的请求头与请求体
 
