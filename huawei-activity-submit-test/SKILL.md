@@ -1,6 +1,6 @@
 ---
 name: huawei-activity-submit-test
-description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后**始终**询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动；若此时未发布则在 ECS（intermediate）完成后再询问一次，若已发布则 ECS 阶段不再询问（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。本 skill 固定使用**测试环境**（现网）接口，无需也**不要**切换环境。仅用于调用接口，不涉及任何页面/浏览器操作.
+description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后**始终**询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动；若此时未发布则在 ECS（intermediate）完成后再询问一次，若已发布则 ECS 阶段不再询问（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。本 skill 固定使用**测试环境**接口，无需也**不要**切换环境。仅用于调用接口，不涉及任何页面/浏览器操作.
 ---
 
 # 华为云开放能力闯关 · 作品提交 Skill（测试环境）
@@ -143,7 +143,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 4. 用户不同意则跳过本步骤，直接结束。
 
 **注意事项**：
-- 只在**沙箱部署（`beginner`）提交成功后**提示本次询问；不要提前询问，ECS（`intermediate`）步骤**不再询问**。
+- **询问时机**：`beginner`（沙箱部署）提交成功后**始终询问**；若用户**未发布**，则 `intermediate`（ECS 持久化部署）提交成功后**再询问一次**；沙箱阶段**已发布**（`galleryPublished=true`）则 ECS 阶段**不再询问**（与操作步骤第 6 步、上方「询问时机」一致）。
 - 是否提交展览馆**完全由用户决定**，用户拒绝则跳过，不得代替用户决定。
 - 执行前先与用户确认或识别闯关任务实际产生的代码目录（前端、后端项目，**目录名不固定**），只推送相关代码，避免带上无关文件。可由用户指定，或扫描本次工作区中生成的项目目录来确定。
 - 如 `npx skills add` 需要联网/安装，失败时如实反馈错误并让用户决定是否重试。
