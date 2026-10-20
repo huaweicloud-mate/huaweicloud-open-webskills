@@ -151,7 +151,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 ## 注意事项
 
 - **只调接口，不做页面操作**：不要驱动浏览器、不要模拟点击页面表单。
-- **固定环境、不可切换**：本 skill 固定使用测试环境；`--env` / `--base` / 环境变量 `HW_ACTIVITY_ENV` 均不受支持，误传会**直接报错**（请改用对应环境的 skill：`huawei-activity-submit-test` 或 `huawei-activity-submit-test`）。
+- **固定环境、不切换**：本 skill 始终使用**测试环境**；传入 `--env` / `--base` 等环境参数会被**忽略**（不报错、无效果），不会切到其它环境（生产环境请改用 `huawei-activity-submit-prod`）。
 - **顺序提交**：步骤必须按 `beginner`（沙箱）→ `intermediate`（ECS）依次提交，接口会校验顺序。
 - **ECS 步骤附加请求头**：`intermediate`（ECS 持久化部署）提交时需携带 `X-HW-PROJECT-ID`（ECS 的 Project ID）与 `X-HW-REGION`（ECS 的 region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。

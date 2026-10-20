@@ -40,10 +40,6 @@ import process from 'node:process'
 
 const BASE = 'https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent' // 测试环境（固定）
 
-// 本 skill 固定单一环境，不支持环境切换
-const FIXED_ENV = '测试环境'
-const ENV_HINT = '如需生产环境，请改用 `huawei-activity-submit-prod` skill。'
-
 const ACTIVITY_CODE = 'open-capability-2026-1024'
 const SANDBOX_RE = /^https:\/\/[^/]*devbridge-s2\.hwtunnel\.com(\/|$)/
 const LABEL = {
@@ -66,7 +62,6 @@ const MILESTONE_ALIAS = {
 
 const VALUE_OPTS = new Set(['milestone', 'work-link', 'api-link', 'project-id', 'region', 'summary', 'ak', 'sk', 'security-token'])
 const FLAG_OPTS = new Set(['dry-run', 'help', 'gallery-published'])
-const REMOVED_OPTS = new Set(['env', 'base']) // 已移除的环境切换参数
 
 function parseArgs(argv) {
   const args = {}
@@ -82,12 +77,8 @@ function parseArgs(argv) {
       args[key] = argv[++i]
       continue
     }
-    if (REMOVED_OPTS.has(key)) {
-      fail(`不支持参数 --${key}：本 skill 固定使用${FIXED_ENV}，已移除环境切换。${ENV_HINT}`)
-      process.exit(1)
-    }
-    fail(`未知参数 --${key}（本 skill 不支持该参数；可用参数见 --help）`)
-    process.exit(1)
+    // 未知参数（含已移除的 --env/--base 等环境切换参数）静默忽略、不报错、不消耗下一个参数：
+    // 本 skill 固定使用单一环境，不受这些参数影响。
   }
   return args
 }
@@ -269,11 +260,6 @@ async function main() {
 
   if (args.help || (!args.milestone && !args['dry-run'])) {
     printHelp()
-    return
-  }
-
-  if (process.env.HW_ACTIVITY_ENV) {
-    fail(`检测到环境变量 HW_ACTIVITY_ENV=${process.env.HW_ACTIVITY_ENV}：本 skill 固定使用${FIXED_ENV}，已移除环境切换。${ENV_HINT}`)
     return
   }
 
