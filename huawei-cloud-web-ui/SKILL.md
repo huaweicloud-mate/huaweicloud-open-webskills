@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-ui
-description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/顶部广告横幅/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局规范（楼层/栅格）、XTemplate 模板语法与完整示例；**Vue 3 工程优先使用 OpenTiny（TinyVue）组件库，能用组件实现的不要用 HTML 标签手写（安装 `npx skills add opentiny/agent-skills`）**；**项目内部 CSS 样式统一加 `#当前项目id` 前缀做样式隔离**；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
+description: 华为云官网 UI 设计规范 Skill，基于 Tiny PortalUI（cnpm-baseui 3.0.17）生成符合华为云官网（huaweicloud.com）与开发者官网（developer.huaweicloud.com）视觉规范的 HTML/CSS 页面。覆盖设计 Token 系统（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉选择/单选复选/日期选择/弹窗/提示/标签/面包屑/分页/轮播/顶部广告横幅/通栏广告/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/插画/套餐对比表格/服务表格/固定表头表格/文本/图标）、布局规范（楼层/优势楼层/栅格）、XTemplate 模板语法与完整示例；**Vue 3 工程优先使用 OpenTiny（TinyVue）组件库，能用组件实现的不要用 HTML 标签手写（安装 `npx skills add opentiny/agent-skills`）**；**项目内部 CSS 样式统一加 `#当前项目id` 前缀做样式隔离**；**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**。当用户需要生成或改造华为云风格页面（技术文档页、API 文档页、产品介绍页、营销落地页、后台管理页、表单页）时使用。
 ---
 
 # 华为云官网 UI 设计规范 Skill
@@ -161,17 +161,21 @@ huawei-cloud-web-ui/
     │   ├── anchor.md           # 锚点导航
     │   ├── collapse.md         # 折叠组件
     │   ├── cards.md            # 卡片
+    │   ├── plan-table.md       # 套餐对比表格（价格行 + 购买行 + 推荐列）
     │   ├── service-table.md    # 支持与服务风格表格
     │   ├── fixed-table.md      # 固定表头表格
     │   ├── navigation.md       # 导航 / 页头（开发者官网场景默认接入公共页头 <hd-header>）
     │   ├── header-login.md     # 登录模式页头（备选自研页头，PC + 移动端登录区）
     │   ├── ad-banner.md        # 顶部广告横幅（自定义组件，纯 CSS）
     │   ├── banner.md           # Banner 轮播
+    │   ├── full-banner.md      # 通栏广告（页面中段整幅推广位）
+    │   ├── illustration.md     # 插画（规范色板 + 插画卡版式）
     │   └── footer.md           # 页脚
     ├── layouts/                # 布局系统
     │   ├── page-structure.md   # 页面结构规范
     │   ├── grid.md             # 栅格系统
-    │   └── floor.md            # 楼层（Section）容器
+    │   ├── floor.md            # 楼层（Section）容器
+    │   └── advantage-floor.md  # 优势楼层（3~5 张同构卡的「为什么选我」楼层）
     └── examples/               # 示例代码
         ├── homepage-dev.html   # 开发者官网首页示例
         └── homepage-main.html  # 主站首页示例
@@ -241,14 +245,23 @@ huawei-cloud-web-ui/
 | 主文字色 | `#191919`（灰90） |
 | 辅助文字色 | `#595959`（灰60） |
 | 弱化文字色 | `#C2C2C2`（灰40） |
-| 页面背景 | `#FFFFFF` / `#F5F5F5` |
-| 容器最大宽 | `1280px`（1440 以下 `1200px`） |
+| 页面背景 | `#FFFFFF` / `#F5F5F5`（楼层灰底）/ `#FAFAFA`（卡片灰底） |
+| 官网内容区宽 | `1600px`（楼层外框 1752 = 1600 + 76×2） |
+| 门户容器宽 | `1280px`（1440 以下 `1200px`，`.por-container`） |
+| 楼层上下 padding | `76px` |
 | 主字体 | HuaweiSans, PingFang SC, Microsoft YaHei |
 | 正文字号 | `14px`（`por-text-body-t3`） |
 | 行高 | `22px`（14px 正文） |
-| 按钮圆角 | 胶囊（半径 = 高度：small 24 / default 32 / middle 40 / large 48px，`--por-button-size-radius-*`） |
-| 卡片圆角 | `2px`（`--por-radius-s`，`.por-card` 实测；`--por-radius-xl` 16px 为门户大卡片 token） |
+| 按钮圆角 | 胶囊（设计稿实测四档恒 `24px`；`--por-button-size-radius-*` 用「半径=高度」，渲染等价） |
+| 按钮高度 | `24 / 32 / 40 / 48px`（设计稿 Small → XLarge） |
+| 卡片圆角 | `16px`（信息卡）/ `24px`（大卡、插画卡、套餐卡） |
+| 主按钮填充 | `#191919`（非华为红；`#C7000B` 仅用于 error-active / 促销） |
+| 插画画布比例 | `1.91 : 1`（非 16:9），主色 `#1476FF` / `#6CCD06` / `#FFAD04` |
+| 通栏广告 | `1920 × 468`，左右 padding `456`，内容区 `1008`；标题 `56 / 48 / 40px` 三档 |
+| 优势楼层 | 内容区 `1592px`（左右 padding `164`），卡组 gap `40`，3/4/5 张 |
 | 栅格 | 24 列响应式 |
+
+> **注意档位命名**：设计稿的 `Large`(40px) 对应 `por-btn-middle`，`XLarge`(48px) 对应 `por-btn-large`，按名字直译会整体错一档。详见 `references/components/buttons.md`。
 
 ### 5. 组件交互初始化速查
 
@@ -280,7 +293,8 @@ huawei-cloud-web-ui/
 ### 2. 间距与布局
 - **统一使用基础尺寸**：间距应基于 4px、8px、16px、24px、32px 等基础尺寸
 - **楼层组织页面**：用 `.por-section` + `.por-container` 组织区块，通过 `data-bg` 控制背景
-- **容器居中**：主要内容使用 `.por-container` 容器，最大宽度 1280px/1200px
+- **容器居中**：官网页面内容区用 `1600px`（楼层外框 1752 = 1600 + 76×2）；门户/后台页面用 `.por-container`（1280px / 1200px）。两者不要混用
+- **楼层上下留白**：官网楼层 padding 固定 `76px`
 - **响应式内边距**：移动端使用 15px，桌面端使用 20px
 - **留白充足**：区块之间保持足够间距（至少 32px），确保内容呼吸感
 
@@ -370,6 +384,8 @@ A: 遵循以下实践：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.6.0 | 2026-10-20 | **补齐官网三个 P0 楼层级组件（均取自设计稿节点树实测值）**：① 新增「插画」（`references/components/illustration.md`）——插画规范色 17 条（主色 `#1476FF`/`#6CCD06`/`#FFAD04`、点缀色、三组灰调点缀、三条渐变）、画布基准 `1.91:1`（非 16:9）、插画卡三规格（窄卡 `652×648`/宽卡 `916×648`/双列 `784×656`，圆角 24、padding 48、gap 32）、1024/1280/1536/1920 四套三列版式；② 新增「通栏广告」（`references/components/full-banner.md`）——页面中段整幅推广位 `1920×468`（`变主按钮` 为 `1916×392`）、左右 padding 456/670、内容区 1008/576、背景有/无图 + 辅助说明开/关、三档标题 56/48/40px，含「渐变字 + 纯色字」混排写法；③ 新增「优势楼层」（`references/layouts/advantage-floor.md`）——「为什么选我」楼层，内容区 `1592`（padding 164）、卡组 gap 40、3/4/5 张对应楼层高 1374/1566/2046，四种卡片类别（单卡片三档/插画窄卡/插画宽卡/通卡）实测尺寸与底色交替规则 |
+| 2.5.0 | 2026-10-20 | **按官网设计稿（Cloud UI v1.0.0 PC 组件库）节点树实测值校准**：① 新增「套餐对比表格」组件（`references/components/plan-table.md`），补上空缺的售卖型表格（价格行/购买行/推荐列高亮/表头标签组）；② 容器宽度区分场景——官网内容区 `1600px`、门户容器 `1280px`（原文档只有 1280，生成官网大屏版式会窄 320px）；③ 卡片圆角补官网实测 `16px`/`24px` 两档（`.por-card` 的 2px 仅适用门户组件），并补卡片 padding 24/32/48、卡组 gap 16/24/28/40；④ 按钮补「设计稿档位映射表」（设计稿 `Large`(40)= `por-btn-middle`、`XLarge`(48)= `por-btn-large`，直译会整体错一档）、主按钮实测 `#191919`、四档左右 padding 16/24/32/48；⑤ 字阶补 `12px` 与 `20/24/28/32/36px` 楼层标题档；⑥ 色彩补插画色板 12 色、促销价红、致命告警 `#C7000B`（区别于普通错误 `#E02128`）、表格与内容底色 |
 | 2.4.0 | 2026-10-15 | 新增「顶部广告横幅」组件（`references/components/ad-banner.md`）：促销/活动横幅，纯 CSS（自定义组件、非 baseui 类），含结构/样式/响应式/配色/交互/无障碍/设计原则；统一品牌红 `#C7000B`、统一样式隔离 `#当前项目id` 前缀 |
 | 2.3.0 | 2026-10-13 | 新增「OpenTiny 组件库（组件优选）」：Vue 3 工程优先用 OpenTiny（TinyVue）组件、给出 `npx skills add opentiny/agent-skills --list` 安装方式与组件选型对照表；新增「样式隔离规范」：项目内部 CSS 统一加 `#{当前项目 id}` 前缀避免公共样式污染；在 使用指南 / 最佳实践 / 前置条件 同步两条强制原则 |
 | 2.2.2 | 2026-09-28 | 明确**开发者官网场景页面默认接入公共开发者页头 `<hd-header>`**：统一 SKILL（描述/使用场景/使用指南/文件结构/参考文档）、navigation.md 接入策略、header-login.md 措辞为「默认接入」，自研页头为备选 |
@@ -413,17 +429,21 @@ A: 遵循以下实践：
 | [页签组件](references/components/tabs.md) | Tabs 切换 |
 | [锚点导航](references/components/anchor.md) | 页面内锚点 |
 | [折叠组件](references/components/collapse.md) | 折叠/展开 |
-| [卡片组件](references/components/cards.md) | 卡片类型、样式、布局 |
+| [卡片组件](references/components/cards.md) | 卡片类型、官网实测规格、排布密度、收起规则 |
+| [套餐对比表格](references/components/plan-table.md) | 多套餐横向对比、价格行、购买行、推荐列高亮 |
 | [服务表格](references/components/service-table.md) | 支持与服务风格表格 |
 | [固定表头表格](references/components/fixed-table.md) | 常规表格 |
 | [导航 / 页头](references/components/navigation.md) | 开发者官网场景默认接入公共页头 `<hd-header>`（加载顺序/双通道/登录链接兜底），自研页头为备选 |
 | [登录模式页头](references/components/header-login.md) | 备选自研页头：PC + 移动端登录区（登录/用户菜单/全宽面板） |
 | [顶部广告横幅](references/components/ad-banner.md) | 促销/活动横幅（自定义组件，纯 CSS） |
+| [通栏广告](references/components/full-banner.md) | 页面中段整幅推广位（1920×468，背景有/无图、变主按钮） |
+| [插画](references/components/illustration.md) | 插画规范色板 17 色、1.91:1 画布、插画卡版式 |
 | [Banner 组件](references/components/banner.md) | Hero Banner、轮播图 |
 | [页脚组件](references/components/footer.md) | 页脚布局、链接 |
 | [页面结构](references/layouts/page-structure.md) | 页面骨架、区块划分 |
 | [栅格系统](references/layouts/grid.md) | 栅格布局、响应式栅格 |
 | [楼层](references/layouts/floor.md) | Section 楼层容器 |
+| [优势楼层](references/layouts/advantage-floor.md) | 「为什么选我」楼层（3~5 张同构卡，通卡/单卡/插画窄卡/插画宽卡） |
 | [开发者站首页示例](references/examples/homepage-dev.html) | 完整的 HTML 示例代码 |
 | [主站首页示例](references/examples/homepage-main.html) | 完整的 HTML 示例代码 |
 
