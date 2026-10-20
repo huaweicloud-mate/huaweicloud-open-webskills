@@ -112,10 +112,17 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 # 或直接：node submit.mjs --ak <AK> --sk <SK> [--security-token <token>]
 ```
 
-成功输出示例：
+成功输出示例（实际为多行 JSON）：
 
 ```
-{ "ok": true, "milestone": "intermediate", "label": "ECS 持久化部署", "points": 2000, "message": "..." }
+{
+  "ok": true,
+  "milestone": "intermediate",
+  "label": "ECS 持久化部署",
+  "points": 2000,
+  "message": "...",
+  "allCompleted": true
+}
 
 提交成功，已获得ECS 持久化部署对应积分 2000 分。
 ```
@@ -156,4 +163,5 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 - **ECS 步骤附加请求头**：`intermediate`（ECS 持久化部署）提交时需携带 `X-HW-PROJECT-ID`（ECS 的 Project ID）与 `X-HW-REGION`（ECS 的 region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。
 - **凭证安全**：AK/SK（及临时凭证的 SecurityToken）仅用于本次会话，不要写入仓库或提交到版本库；优先用环境变量或凭证文件，避免明文出现在命令行历史。
+- **SK 明文传输说明**：`X-HW-SK` 以请求头明文传递是**活动 API 自身设计**（`/agent/*` 接口要求 AK/SK 头），依赖 **HTTPS 传输加密**；请勿将 SK 写入仓库、日志或对外分享。
 - **提交不可重复使用**：同一地址提交后即与该账户绑定，勿重复提交相同链接。

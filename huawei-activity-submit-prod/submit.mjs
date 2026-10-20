@@ -164,8 +164,8 @@ function writeLinks(o) {
   try {
     fs.mkdirSync(STATE_DIR, { recursive: true })
     fs.writeFileSync(LINKS_FILE, JSON.stringify(o, null, 2), 'utf8')
-  } catch {
-    /* 忽略写入失败 */
+  } catch (e) {
+    console.error(`警告：写入状态文件失败（${e?.message || e}），“作品展览馆已发布”状态可能未记录，可能导致后续重复询问。`)
   }
 }
 
@@ -380,4 +380,11 @@ function printHelp() {
 `)
 }
 
-main().catch((e) => fail(String(e?.stack || e)))
+main().catch((e) => {
+  const name = e?.name || ''
+  if (name === 'TimeoutError' || name === 'AbortError') {
+    fail('请求超时（30s）：请检查网络后重试。')
+    return
+  }
+  fail(String(e?.stack || e))
+})
