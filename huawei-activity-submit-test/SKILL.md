@@ -1,6 +1,6 @@
 ---
 name: huawei-activity-submit-test
-description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报已获得的对应积分；沙箱部署（beginner）完成后**始终**询问用户是否（可选）将作品发布到开发者作品展览馆的闯关活动；若此时未发布则在 ECS（intermediate）完成后再询问一次，若已发布则 ECS 阶段不再询问（npx skills add ... publish-work-to-gallery）。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。本 skill 固定使用**测试环境**接口，无需也**不要**切换环境。仅用于调用接口，不涉及任何页面/浏览器操作.
+description: 直连华为云开放能力线上闯关挑战（activity_code=open-capability-2026-1024）的 Agent 提交接口（POST {base}/submit-activity-work），用 AK/SK 请求头（X-HW-AK / X-HW-SK / X-HW-Security-Token）把活动生成的作品链接/公网地址自动提交到“沙箱部署”（milestone=beginner）与“ECS 持久化部署”（milestone=intermediate）两步，并在成功后回报预计可得积分。Use when the user asks to 提交作品、提交闯关成果、自动提交活动成果、提交沙箱链接/公网地址, or when a generated sandbox URL needs to be submitted for the 华为云开放能力闯关挑战。本 skill 固定使用**测试环境**接口，无需也**不要**切换环境。仅用于调用接口，不涉及任何页面/浏览器操作.
 ---
 
 # 华为云开放能力闯关 · 作品提交 Skill（测试环境）
@@ -83,8 +83,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 5. **回报用户**：
    - 成功：提示“提交成功。**预计可得**{沙箱部署 / ECS 持久化部署}对应积分 {1000 / 2000} 分（以成长体系实际发放为准；**该积分仅可获得一次**，重复提交不再加分）”，并说明该步骤已完成、可继续下一步。
    - 失败：原样反馈接口返回的 `message`（如 `里程碑参数不合法`、`当前里程碑需提交接口地址`、`作品链接无效`、`缺少请求头 X-HW-AK`）。
-6. **发布到作品展览馆（用户可选，见下节）**：`beginner`（沙箱部署）提交成功后**始终询问**用户是否将作品发布到**开发者作品展览馆的闯关活动**（脚本在此时把发布状态**重置为 false**）；若用户**未发布**，则在 `intermediate`（ECS 持久化部署）提交成功后**再询问一次**；若沙箱阶段**已发布**（`galleryPublished=true`）则 ECS 阶段**不再询问**。发布成功后**运行 `node submit.mjs --gallery-published` 记录状态**。
-7. **资源清理（全部完成后）**：`intermediate`（ECS 持久化部署）提交成功即 `allCompleted=true`，**必须**用 `question` 工具询问用户是否清理本次活动创建的**按量付费资源**（选项：全部清理 / 仅删 ECS / 暂不清理），按用户选择执行或跳过；脚本也会在成功输出中打印清理提醒。
+6. **资源清理（全部完成后）**：`intermediate`（ECS 持久化部署）提交成功即 `allCompleted=true`，**必须**用 `question` 工具询问用户是否清理本次活动创建的**按量付费资源**（选项：全部清理 / 仅删 ECS / 暂不清理），按用户选择执行或跳过；脚本也会在成功输出中打印清理提醒。
 
 ## 脚本用法
 
@@ -126,34 +125,6 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 
 提交成功。预计可得ECS 持久化部署对应积分 2000 分（以华为云成长体系实际发放为准；该积分仅可获得一次，重复提交不再加分）。
 ```
-
-## 发布到开发者作品展览馆的闯关活动展示（用户可选）
-
-**询问时机**：
-
-- `beginner`（沙箱部署）提交成功后**始终询问**用户是否发布到作品展览馆（脚本在此时把 `galleryPublished` **重置为 false**）；
-- 沙箱阶段**已发布**（运行过 `node submit.mjs --gallery-published`，即 `galleryPublished=true`）→ `intermediate`（ECS 持久化部署）阶段**不再询问**；
-- 沙箱阶段**未发布**（仍为 false）→ `intermediate`（ECS）提交成功后**再询问一次**。
-
-**是否发布由用户决定**——同意才发布，拒绝则跳过、不勉强。发布成功后**运行 `node submit.mjs --gallery-published` 记录状态**。
-
-> **默认直接提交到此活动**：作品默认提交到作品展览馆的「**闯关活动**」，**跳过训练营选择**，不再让用户挑营地。
-> - 活动名：`闯关活动`
-> - `trainingCampId`：`47d6ba99-fca0-4797-947d-a8776f506df1`
-
-1. **询问用户**（用 `question` 工具）：是否将作品提交到**开发者作品展览馆的闯关活动**展示？（**用户可选**，明确同意才继续；不同意就结束，不要勉强）
-2. **用户同意后**，执行：
-   ```bash
-   npx skills add https://gitcode.com/Lingxi-HandsOn/gallery.git --skill publish-work-to-gallery -y 2>&1
-   ```
-3. 该命令会安装 `publish-work-to-gallery` skill；随后**按该 skill 的指引**，收集并将用户本地做闯关任务产生的代码（前端、后端等项目的实际目录）推送至开发者作品展览馆的闯关活动。发布时**默认使用 `trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1`（闯关活动），无需再选择训练营**。**代码目录名不固定**，以用户本次实际生成/使用的目录为准，不要假定某个固定仓库名。
-4. 用户不同意则跳过本步骤，直接结束。
-
-**注意事项**：
-- **询问时机**：`beginner`（沙箱部署）提交成功后**始终询问**；若用户**未发布**，则 `intermediate`（ECS 持久化部署）提交成功后**再询问一次**；沙箱阶段**已发布**（`galleryPublished=true`）则 ECS 阶段**不再询问**（与操作步骤第 6 步、上方「询问时机」一致）。
-- 是否提交展览馆**完全由用户决定**，用户拒绝则跳过，不得代替用户决定。
-- 执行前先与用户确认或识别闯关任务实际产生的代码目录（前端、后端项目，**目录名不固定**），只推送相关代码，避免带上无关文件。可由用户指定，或扫描本次工作区中生成的项目目录来确定。
-- 如 `npx skills add` 需要联网/安装，失败时如实反馈错误并让用户决定是否重试。
 
 ## 注意事项
 
