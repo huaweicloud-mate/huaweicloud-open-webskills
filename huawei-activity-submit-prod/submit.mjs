@@ -331,7 +331,7 @@ async function main() {
       2,
     ),
   )
-  console.log(`\n提交成功，已获得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
+  console.log(`\n提交成功。预计可得${LABEL[ms]}对应积分 ${POINTS[ms]} 分（以华为云成长体系实际发放为准；该积分仅可获得一次，重复提交不再加分）。`)
 
   // 记录展览馆发布状态（供后续步骤判断是否还需询问）
   const links = readLinks()
