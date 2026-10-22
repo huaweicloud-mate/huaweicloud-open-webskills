@@ -28,10 +28,10 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 - `X-HW-SK`（必填）：华为云 Secret Key
 - `X-HW-Security-Token`（可选）：使用 STS 临时凭证时必填
 
-**ECS 步骤附加请求头**（仅 `intermediate`（ECS 持久化部署）提交时携带）：
+**附加请求头（两步均需）**：
 
-- `X-HW-PROJECT-ID`：ECS 的 Project ID
-- `X-HW-REGION`：ECS 的 region（如 `cn-north-4`）
+- `X-HW-PROJECT-ID`：Project ID
+- `X-HW-REGION`：region（如 `cn-north-4`）
 
 > 凭证优先级：命令行参数 > 环境变量（`HW_ACCESS_KEY`/`HW_SECRET_KEY`/`HW_SECURITY_TOKEN`，兼容 `HUAWEICLOUD_SDK_AK`/`HUAWEICLOUD_SDK_SK`/`HUAWEICLOUD_SDK_SECURITY_TOKEN`、`HW_AK`/`HW_SK`）> 凭证文件 `~/.config/hw-activity/credentials.json`（`{"ak":"...","sk":"...","securityToken":"..."}`）> DevKit 统一凭据库 `~/.config/huaweicloud/credentials.json`。**切勿把凭证写入仓库。**
 
@@ -71,7 +71,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 | 步骤 | milestone | 需提交 | 校验 | 成功后积分 |
 |------|-----------|--------|------|-----------|
-| 沙箱部署 | `beginner` | 沙箱站点链接（`work_link`） | 沙箱域名 | 1000 分（¥100） |
+| 沙箱部署 | `beginner` | 沙箱站点链接（`work_link`） | 沙箱域名（另需 Project ID / region 请求头） | 1000 分（¥100） |
 | ECS 持久化部署 | `intermediate` | 公网访问地址（`api_link`） | `http(s)://` 开头**且含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`） | 2000 分（¥200） |
 
 ## 操作步骤（Agent 执行）
@@ -79,7 +79,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 1. **收集链接**：沙箱步骤用公开沙箱域名（`https://xxx.devbridge-s2.hwtunnel.com`，部署后先 `curl -sI <URL>` 验证 200）；ECS 步骤用 ECS 公网 HTML 地址（`http://<EIP>/`）。
 2. **确定当前步骤**：按流程判断——先提交沙箱（`beginner`），沙箱通过后再提交 ECS（`intermediate`）；只提交当前已完成的步骤。
 3. **校验链接格式**：脚本会在提交前自动校验（沙箱域名、`http(s)://` 前缀与 `index.html`、说明 ≤500 字）；不通过时会打印原因，修正后再提交。
-4. **执行提交**：运行 `submit.mjs`（见下）。参数与步骤字段对应（本 skill 固定使用生产环境接口）。
+4. **执行提交**：运行 `submit.mjs`（见下）。参数与步骤字段对应（**两步均需 `--project-id` 与 `--region`**；本 skill 固定使用生产环境接口）。
 5. **回报用户**：
    - 成功：提示“提交成功。**预计可得**{沙箱部署 / ECS 持久化部署}对应积分 {1000 / 2000} 分（以成长体系实际发放为准；**该积分仅可获得一次**，重复提交不再加分）”，并说明该步骤已完成、可继续下一步。
    - 失败：原样反馈接口返回的 `message`（如 `里程碑参数不合法`、`当前里程碑需提交接口地址`、`作品链接无效`、`缺少请求头 X-HW-AK`）。
@@ -90,9 +90,10 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 脚本位于本 skill 目录：`submit.mjs`（纯 Node，Node ≥ 18，无需额外依赖）。
 
 ```bash
-# 1) 沙箱部署：提交沙箱域名 URL（milestone=beginner）
+# 1) 沙箱部署：提交沙箱域名 URL（milestone=beginner；两步均需带 Project ID / region）
 node submit.mjs --milestone beginner \
   --work-link https://abcd1234-3000.devbridge-s2.hwtunnel.com \
+  --project-id <PROJECT_ID> --region cn-north-4 \
   --summary "2048 单文件小游戏"
 
 # 2) ECS 持久化部署：提交公网访问地址（milestone=intermediate；链接需含 index.html；带 ECS 的 Project ID / region）
@@ -131,7 +132,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 - **只调接口，不做页面操作**：不要驱动浏览器、不要模拟点击页面表单。
 - **固定环境、不切换**：本 skill 始终使用**生产环境**；传入 `--env` / `--base` 等环境参数会被**忽略**（不报错、无效果），不会切到其它环境（测试环境请改用 `huawei-activity-submit-test`）。
 - **顺序提交**：步骤必须按 `beginner`（沙箱）→ `intermediate`（ECS）依次提交，接口会校验顺序。
-- **ECS 步骤附加请求头**：`intermediate`（ECS 持久化部署）提交时需携带 `X-HW-PROJECT-ID`（ECS 的 Project ID）与 `X-HW-REGION`（ECS 的 region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
+- **附加请求头（两步均需）**：`beginner` 与 `intermediate` 提交时均需携带 `X-HW-PROJECT-ID`（Project ID）与 `X-HW-REGION`（region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。
 - **凭证安全**：AK/SK（及临时凭证的 SecurityToken）仅用于本次会话，不要写入仓库或提交到版本库；优先用环境变量或凭证文件，避免明文出现在命令行历史。
 - **SK 明文传输说明**：`X-HW-SK` 以请求头明文传递是**活动 API 自身设计**（`/agent/*` 接口要求 AK/SK 头），依赖 **HTTPS 传输加密**；请勿将 SK 写入仓库、日志或对外分享。

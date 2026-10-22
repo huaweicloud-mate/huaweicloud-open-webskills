@@ -5,7 +5,7 @@
 //   POST {base}/submit-activity-work
 //   base = https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent   （测试环境，固定；本 skill 不切换环境）
 //   请求头（鉴权）：X-HW-AK（必）、X-HW-SK（必）、X-HW-Security-Token（可选）
-//   ECS 步骤（intermediate）额外请求头：X-HW-PROJECT-ID、X-HW-REGION（上传 ECS 的 Project ID 与 region）
+//   两步额外请求头：X-HW-PROJECT-ID、X-HW-REGION（上传 Project ID 与 region）
 //   请求体 / 响应与 /user/submit-activity-work 一致：
 //     { activity_code, milestone, work_link?, api_link?, summary? }
 //
@@ -16,7 +16,7 @@
 //   `--milestone` 同时接受 sandbox / ecs 别名（自动归一化为 beginner / intermediate）。
 //
 // 用法示例：
-//   node submit.mjs --milestone beginner --work-link https://xxxx-3000.devbridge-s2.hwtunnel.com --summary "..."
+//   node submit.mjs --milestone beginner --work-link https://xxxx-3000.devbridge-s2.hwtunnel.com --project-id <PROJECT_ID> --region cn-north-4 --summary "..."
 //   node submit.mjs --milestone intermediate --api-link http://<ECS_EIP>/hc-activity/index.html --project-id <PROJECT_ID> --region cn-north-4 --summary "..."
 //
 // 凭证（优先级：命令行参数 > 环境变量 > 凭证文件）：
@@ -27,8 +27,8 @@
 //   兜底：DevKit 统一凭据库 ~/.config/huaweicloud/credentials.json（{"ak","sk","securityToken"}）
 //
 // 其他：
-//   --project-id <id> ECS 步骤：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
-//   --region <region> ECS 步骤：region（也支持 HW_REGION / hcloud 配置）
+//   --project-id <id> 两步均需：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
+//   --region <region> 两步均需：region（也支持 HW_REGION / hcloud 配置）
 //   --dry-run         只打印将提交的请求头/请求体，不真正提交
 //   --help            显示帮助
 
@@ -243,19 +243,15 @@ async function main() {
 
   if (ms === 'intermediate' && apiLink) apiLink = ensureIndexHtml(apiLink)
 
-  // ECS 步骤：附加 X-HW-PROJECT-ID / X-HW-REGION 请求头（上传 ECS 的 Project ID 与 region）
+  // 两步均附加 X-HW-PROJECT-ID / X-HW-REGION 请求头（上传 Project ID 与 region）
   const { projectId, region } = loadProjectRegion(args)
   const extraHeaders = {}
-  if (ms === 'intermediate') {
-    if (projectId) extraHeaders['X-HW-PROJECT-ID'] = projectId
-    if (region) extraHeaders['X-HW-REGION'] = region
-  }
+  if (projectId) extraHeaders['X-HW-PROJECT-ID'] = projectId
+  if (region) extraHeaders['X-HW-REGION'] = region
 
   const errs = validate(ms, workLink, apiLink)
-  if (ms === 'intermediate') {
-    if (!projectId) errs.push('缺少 ECS Project ID：请传 --project-id，或设 HW_PROJECT_ID，或确保 hcloud 配置了 projectId')
-    if (!region) errs.push('缺少 ECS region：请传 --region，或设 HW_REGION，或确保 hcloud 配置了 region')
-  }
+  if (!projectId) errs.push('缺少 Project ID：请传 --project-id，或设 HW_PROJECT_ID，或确保 hcloud 配置了 projectId')
+  if (!region) errs.push('缺少 region：请传 --region，或设 HW_REGION，或确保 hcloud 配置了 region')
   if (summary && summary.length > 500) errs.push('作品说明不能超过 500 字')
   if (errs.length) {
     fail('参数校验未通过：\n- ' + errs.join('\n- '))
@@ -317,8 +313,8 @@ function printHelp() {
   --milestone <ms>       步骤：beginner（沙箱部署）/ intermediate（ECS 持久化部署）；也接受别名 sandbox / ecs
   --work-link <url>      beginner 必填，沙箱域名 URL（https://xxx.devbridge-s2.hwtunnel.com 形式）
   --api-link <url>       intermediate 必填，公网访问地址（http(s):// 开头且含 index.html，如 http://<EIP>/hc-activity/index.html）
-  --project-id <id>      intermediate 必填，ECS 的 Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
-  --region <region>      intermediate 必填，ECS 的 region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
+  --project-id <id>      必填（两步），Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
+  --region <region>      必填（两步），region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
   --dry-run              仅打印将提交的请求头与请求体
 
