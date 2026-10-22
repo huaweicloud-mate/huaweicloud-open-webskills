@@ -56,7 +56,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 ## 步骤、字段对应、校验与积分
 
-两步，必须**按顺序**提交：`beginner`（沙箱部署）→ `intermediate`（ECS 持久化部署）；前一步通过后才能提交下一步。
+两步相互独立、**无强制先后**：`beginner`（沙箱部署）与 `intermediate`（ECS 持久化部署）可分别单独提交，不要求先沙箱后 ECS。
 
 > **字段/取值对应（重要）**：后端 `milestone` 取值**沿用旧版** `beginner` / `intermediate`（页面文案已改名为“沙箱部署 / ECS 持久化部署”）；旧 `advanced` 步骤**已取消**，不存在。
 >
@@ -77,7 +77,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 ## 操作步骤（Agent 执行）
 
 1. **收集链接**：沙箱步骤用公开沙箱域名（`https://xxx.devbridge-s2.hwtunnel.com`，部署后先 `curl -sI <URL>` 验证 200）；ECS 步骤用 ECS 公网 HTML 地址（`http://<EIP>/`）。
-2. **确定当前步骤**：按流程判断——先提交沙箱（`beginner`），沙箱通过后再提交 ECS（`intermediate`）；只提交当前已完成的步骤。
+2. **确定当前步骤**：两步相互独立、无强制先后；按用户本次要提交的成果选择对应步骤（沙箱→`beginner`，ECS→`intermediate`），一次提交一个步骤。
 3. **校验链接格式**：脚本会在提交前自动校验（沙箱域名、`http(s)://` 前缀与 `index.html`、说明 ≤500 字）；不通过时会打印原因，修正后再提交。
 4. **执行提交**：运行 `submit.mjs`（见下）。参数与步骤字段对应（**两步均需 `--project-id` 与 `--region`**；本 skill 固定使用生产环境接口）。
 5. **回报用户**：
@@ -131,7 +131,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 
 - **只调接口，不做页面操作**：不要驱动浏览器、不要模拟点击页面表单。
 - **固定环境、不切换**：本 skill 始终使用**生产环境**；传入 `--env` / `--base` 等环境参数会被**忽略**（不报错、无效果），不会切到其它环境（测试环境请改用 `huawei-activity-submit-test`）。
-- **顺序提交**：步骤必须按 `beginner`（沙箱）→ `intermediate`（ECS）依次提交，接口会校验顺序。
+- **无顺序要求**：两步相互独立，可任意先后单独提交（接口不校验先后顺序）。
 - **附加请求头（两步均需）**：`beginner` 与 `intermediate` 提交时均需携带 `X-HW-PROJECT-ID`（Project ID）与 `X-HW-REGION`（region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。
 - **凭证安全**：AK/SK（及临时凭证的 SecurityToken）仅用于本次会话，不要写入仓库或提交到版本库；优先用环境变量或凭证文件，避免明文出现在命令行历史。
