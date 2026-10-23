@@ -296,7 +296,8 @@ async function main() {
       2,
     ),
   )
-  console.log(`\n提交成功。预计可得${LABEL[ms]}对应积分 ${POINTS[ms]} 分（以华为云成长体系实际发放为准；该积分仅可获得一次，重复提交不再加分）。`)
+  console.log(`\n提交成功。预计可得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
+  console.log('注意：积分以华为云成长体系实际发放为准；同一活动积分仅可获得一次，重复提交不再加分。')
 
   if (ms === 'intermediate') {
     console.log('请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
