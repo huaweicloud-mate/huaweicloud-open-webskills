@@ -84,7 +84,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
    - 成功：提示“提交成功。**预计可得**{沙箱部署 / ECS 持久化部署}对应积分 {100 / 400} 分。”，并**另行单独提示**“注意：积分以华为云成长体系实际发放为准；同一活动积分仅可获得一次，重复提交不再加分。”，并说明该步骤已完成、可继续下一步。
    - 失败：原样反馈接口返回的 `message`（如 `里程碑参数不合法`、`当前里程碑需提交接口地址`、`作品链接无效`、`缺少请求头 X-HW-AK`）。
 6. **发布到作品展览馆（用户可选，见下节）**：`beginner`（沙箱部署）提交成功后**始终询问**用户是否将作品发布到**开发者作品展览馆的闯关活动**（脚本在此时把发布状态**重置为 false**）；若用户**未发布**，则在 `intermediate`（ECS 持久化部署）提交成功后**再询问一次**；若沙箱阶段**已发布**（`galleryPublished=true`）则 ECS 阶段**不再询问**。发布成功后**运行 `node submit.mjs --gallery-published` 记录状态**。
-7. **资源清理（全部完成后）**：`intermediate`（ECS 持久化部署）提交成功即 `allCompleted=true`，**必须**用 `question` 工具询问用户是否清理本次活动创建的**按量付费资源**（选项：全部清理 / 仅删 ECS / 暂不清理），按用户选择执行或跳过；脚本也会在成功输出中打印清理提醒。
+7. **资源清理（ECS 提交后）**：`intermediate`（ECS 持久化部署）提交成功后，**必须**用 `question` 工具询问用户是否清理本次活动创建的**按量付费资源**（选项：全部清理 / 仅删 ECS / 暂不清理），按用户选择执行或跳过；脚本也会在成功输出中打印清理提醒。
 
 ## 脚本用法
 
@@ -122,7 +122,7 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
   "label": "ECS 持久化部署",
   "points": 400,
   "message": "...",
-  "allCompleted": true
+  "ecsSubmitted": true
 }
 
 提交成功。预计可得ECS 持久化部署对应积分 400 分。
@@ -160,9 +160,9 @@ $env:HW_SECURITY_TOKEN = "<使用 STS 临时凭证时填写>"   # 可选
 ## 注意事项
 
 - **只调接口，不做页面操作**：不要驱动浏览器、不要模拟点击页面表单。
-- **固定环境、不切换**：本 skill 始终使用**测试环境**；传入 `--env` / `--base` 等环境参数会被**忽略**（不报错、无效果），不会切到其它环境（生产环境请改用 `huawei-activity-submit-prod`）。
+- **固定环境、不切换**：本 skill 始终使用**测试环境**；传入 `--env` / `--base` 等环境参数会被**忽略**（不报错、无效果），不会切到其它环境。
 - **无顺序要求**：两步相互独立，可任意先后单独提交（接口不校验先后顺序）。
-- **附加请求头（两步均需）**：`beginner` 与 `intermediate` 提交时均需携带 `X-HW-PROJECT-ID`（Project ID）与 `X-HW-REGION`（region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。
+- **附加请求头（两步均需）**：`beginner` 与 `intermediate` 提交时均需携带 `X-HW-PROJECT-ID`（Project ID）与 `X-HW-REGION`（region）；脚本通过 `--project-id`/`--region`（或环境变量 `HW_PROJECT_ID`/`HW_REGION`，或 hcloud 配置）取值，缺失会报错。**后端已对两步均强制校验** `X-HW-PROJECT-ID`/`X-HW-REGION`；此前仅 ECS 要求，遵循旧提示词/旧安装的 Agent 提交沙箱步骤时需补传 `--project-id`/`--region`，否则会被“缺少 Project ID”拦截。
 - **沙箱域名强校验**：`beginner` 步骤的链接必须是 `https://xxx.devbridge-s2.hwtunnel.com` 形式的沙箱域名；`intermediate` 步骤提交的公网地址必须 **`http(s)://` 开头且包含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`），否则接口正则报错。
 - **凭证安全**：AK/SK（及临时凭证的 SecurityToken）仅用于本次会话，不要写入仓库或提交到版本库；优先用环境变量或凭证文件，避免明文出现在命令行历史。
 - **SK 明文传输说明**：`X-HW-SK` 以请求头明文传递是**活动 API 自身设计**（`/agent/*` 接口要求 AK/SK 头），依赖 **HTTPS 传输加密**；请勿将 SK 写入仓库、日志或对外分享。

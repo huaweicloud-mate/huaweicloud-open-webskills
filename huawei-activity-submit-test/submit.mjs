@@ -321,7 +321,7 @@ async function main() {
         label: LABEL[ms],
         points: POINTS[ms],
         message: r.json.message || '',
-        allCompleted: ms === 'intermediate',
+        ecsSubmitted: ms === 'intermediate',
       },
       null,
       2,
@@ -345,8 +345,8 @@ async function main() {
   if (ms === 'intermediate') {
     console.log(
       galleryDone
-        ? 'ECS 持久化部署已完成（allCompleted=true）。（作品展览馆此前已发布，不再询问。）'
-        : 'ECS 持久化部署已完成（allCompleted=true）。此前未发布到作品展览馆，请再询问用户是否发布（用户可选）；发布成功后运行 `node submit.mjs --gallery-published` 记录。',
+        ? 'ECS 持久化部署已完成。（作品展览馆此前已发布，不再询问。）'
+        : 'ECS 持久化部署已完成。此前未发布到作品展览馆，请再询问用户是否发布（用户可选）；发布成功后运行 `node submit.mjs --gallery-published` 记录。',
     )
     console.log('请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
   }
