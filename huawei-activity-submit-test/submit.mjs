@@ -30,6 +30,7 @@
 //   --project-id <id> 两步均需：Project ID（也支持 HW_PROJECT_ID / hcloud 配置）
 //   --region <region> 两步均需：region（也支持 HW_REGION / hcloud 配置）
 //   --dry-run         只打印将提交的请求头/请求体，不真正提交
+//   --gallery-published 记录“作品展览馆已发布”（供后续步骤判断是否还需询问）
 //   --help            显示帮助
 
 import fs from 'node:fs'
@@ -47,6 +48,10 @@ const LABEL = {
 }
 const POINTS = { beginner: 100, intermediate: 400 }
 
+// 状态文件（记录“作品展览馆已发布”，供后续步骤判断是否还需询问）
+const STATE_DIR = path.join(os.homedir(), '.config', 'hw-activity')
+const LINKS_FILE = path.join(STATE_DIR, 'links.json')
+
 // 步骤别名 → 后端 milestone 值
 const MILESTONE_ALIAS = {
   beginner: 'beginner',
@@ -56,7 +61,7 @@ const MILESTONE_ALIAS = {
 }
 
 const VALUE_OPTS = new Set(['milestone', 'work-link', 'api-link', 'project-id', 'region', 'summary', 'ak', 'sk', 'security-token'])
-const FLAG_OPTS = new Set(['dry-run', 'help'])
+const FLAG_OPTS = new Set(['dry-run', 'help', 'gallery-published'])
 
 function parseArgs(argv) {
   const args = {}
@@ -147,6 +152,23 @@ function loadProjectRegion(args) {
   return { projectId, region }
 }
 
+function readLinks() {
+  try {
+    return JSON.parse(fs.readFileSync(LINKS_FILE, 'utf8')) || {}
+  } catch {
+    return {}
+  }
+}
+
+function writeLinks(o) {
+  try {
+    fs.mkdirSync(STATE_DIR, { recursive: true })
+    fs.writeFileSync(LINKS_FILE, JSON.stringify(o, null, 2), 'utf8')
+  } catch (e) {
+    console.error(`警告：写入状态文件失败（${e?.message || e}），“作品展览馆已发布”状态可能未记录，可能导致后续重复询问。`)
+  }
+}
+
 async function call(base, pathname, { method = 'GET', body, creds, extraHeaders } = {}) {
   const headers = { Accept: 'application/json' }
   if (body) headers['Content-Type'] = 'application/json'
@@ -227,6 +249,15 @@ function fail(msg) {
 async function main() {
   const args = parseArgs(process.argv.slice(2))
 
+  // 记录「作品展览馆已发布」状态（供后续步骤判断是否还需询问）
+  if (args['gallery-published']) {
+    const links = readLinks()
+    links.galleryPublished = true
+    writeLinks(links)
+    console.log('已记录：作品展览馆已发布（后续步骤不再重复询问）。')
+    return
+  }
+
   if (args.help || (!args.milestone && !args['dry-run'])) {
     printHelp()
     return
@@ -299,7 +330,24 @@ async function main() {
   console.log(`\n提交成功。预计可得${LABEL[ms]}对应积分 ${POINTS[ms]} 分。`)
   console.log('注意：积分以华为云成长体系实际发放为准；同一活动积分仅可获得一次，重复提交不再加分。')
 
+  // 记录展览馆发布状态（供后续步骤判断是否还需询问）
+  const links = readLinks()
+  if (ms === 'beginner') links.galleryPublished = false // 沙箱部署后始终询问 → 重置状态
+  const galleryDone = Boolean(links.galleryPublished)
+  writeLinks(links)
+
+  // 作品展览馆询问：沙箱后始终询问；沙箱未发布则 ECS 后再问一次；沙箱已发布则 ECS 不再询问
+  if (ms === 'beginner') {
+    console.log(
+      '沙箱部署已完成。请询问用户是否将作品发布到开发者作品展览馆的闯关活动展示（用户可选，不强求；默认训练营：闯关活动，trainingCampId=47d6ba99-fca0-4797-947d-a8776f506df1）。若用户同意并发布成功，请运行 `node submit.mjs --gallery-published` 记录；若未发布，ECS 完成后会再询问一次。',
+    )
+  }
   if (ms === 'intermediate') {
+    console.log(
+      galleryDone
+        ? 'ECS 持久化部署已完成（allCompleted=true）。（作品展览馆此前已发布，不再询问。）'
+        : 'ECS 持久化部署已完成（allCompleted=true）。此前未发布到作品展览馆，请再询问用户是否发布（用户可选）；发布成功后运行 `node submit.mjs --gallery-published` 记录。',
+    )
     console.log('请提醒用户清理本次活动创建的按量付费资源（ECS / EIP / 带宽 / VPC / 安全组等）以免持续计费；清理前先与用户确认。')
   }
 }
@@ -317,6 +365,7 @@ function printHelp() {
   --project-id <id>      必填（两步），Project ID（请求头 X-HW-PROJECT-ID；或 HW_PROJECT_ID / hcloud 配置）
   --region <region>      必填（两步），region（请求头 X-HW-REGION；或 HW_REGION / hcloud 配置）
   --summary <text>       作品说明，≤500 字（可选）
+  --gallery-published    记录“作品展览馆已发布”，后续步骤不再重复询问（发布成功后运行一次）
   --dry-run              仅打印将提交的请求头与请求体
 
 凭证（优先级 参数 > 环境变量 > 文件）：
