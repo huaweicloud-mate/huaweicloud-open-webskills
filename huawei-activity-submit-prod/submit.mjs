@@ -135,7 +135,7 @@ function readHcloudProfile() {
   }
 }
 
-// ECS 步骤所需的 Project ID / region（优先级：命令行参数 > 环境变量 > hcloud 配置）
+// 两步所需的 Project ID / region（优先级：命令行参数 > 环境变量 > hcloud 配置）
 function loadProjectRegion(args) {
   let projectId = args['project-id'] || envFirst(['HW_PROJECT_ID', 'HUAWEICLOUD_PROJECT_ID'])
   let region = args.region || envFirst(['HW_REGION', 'HUAWEICLOUD_REGION'])
