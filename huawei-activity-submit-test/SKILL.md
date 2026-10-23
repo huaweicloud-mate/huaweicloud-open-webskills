@@ -5,7 +5,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 
 # 华为云开放能力闯关 · 作品提交 Skill（测试环境）
 
-让 Agent 直接调用活动 **Agent 提交接口**（AK/SK 鉴权）完成成果提交（**不做任何页面/浏览器操作**），提交成功后向用户提示已获得的对应步骤积分。
+让 Agent 直接调用活动 **Agent 提交接口**（AK/SK 鉴权）完成成果提交（**不做任何页面/浏览器操作**），提交成功后向用户提示预计可得的对应步骤积分。
 
 ## 何时使用
 
@@ -96,7 +96,7 @@ node submit.mjs --milestone beginner \
   --project-id <PROJECT_ID> --region cn-north-4 \
   --summary "2048 单文件小游戏"
 
-# 2) ECS 持久化部署：提交公网访问地址（milestone=intermediate；链接需含 index.html；带 ECS 的 Project ID / region）
+# 2) ECS 持久化部署：提交公网访问地址（milestone=intermediate；链接需含 index.html；带 Project ID / region）
 node submit.mjs --milestone intermediate \
   --api-link http://<ECS_EIP>/hc-activity/index.html \
   --project-id <PROJECT_ID> --region cn-north-4
