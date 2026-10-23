@@ -45,7 +45,7 @@ const LABEL = {
   beginner: '沙箱部署',
   intermediate: 'ECS 持久化部署',
 }
-const POINTS = { beginner: 1000, intermediate: 2000 }
+const POINTS = { beginner: 100, intermediate: 400 }
 
 // 步骤别名 → 后端 milestone 值
 const MILESTONE_ALIAS = {
