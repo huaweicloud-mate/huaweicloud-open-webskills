@@ -74,7 +74,7 @@ description: 直连华为云开放能力线上闯关挑战（activity_code=open-
 | 沙箱部署 | `beginner` | 沙箱站点链接（`work_link`） | 沙箱域名（另需 Project ID / region 请求头） | 1000 分（¥100） |
 | ECS 持久化部署 | `intermediate` | 公网访问地址（`api_link`） | `http(s)://` 开头**且含 `index.html`**（如 `http://<EIP>/hc-activity/index.html`） | 2000 分（¥200） |
 
-## 操作步骤（Agent 执行）
+## Workflow（工作流 / 操作步骤）
 
 1. **收集链接**：沙箱步骤用公开沙箱域名（`https://xxx.devbridge-s2.hwtunnel.com`，部署后先 `curl -sI <URL>` 验证 200）；ECS 步骤用 ECS 公网 HTML 地址（`http://<EIP>/`）。
 2. **确定当前步骤**：两步相互独立、无强制先后；按用户本次要提交的成果选择对应步骤（沙箱→`beginner`，ECS→`intermediate`），一次提交一个步骤。
