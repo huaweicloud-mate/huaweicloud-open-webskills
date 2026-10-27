@@ -114,7 +114,7 @@
       font-size: 14px;
       line-height: 38px;
       padding: 0 32px;
-      border-radius: 2px;
+      border-radius: 24px;
       cursor: pointer;
       border: 1px solid transparent;
     }

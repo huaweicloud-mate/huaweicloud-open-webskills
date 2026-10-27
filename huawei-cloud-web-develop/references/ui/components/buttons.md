@@ -33,6 +33,26 @@
 <a class="por-btn por-btn-primary por-btn-large">large</a>
 ```
 
+## 设计稿档位映射（重要）
+
+官网设计稿的尺寸命名与 PortalUI class **整体偏移一档**，按名字直觉取值会错位。实测对照：
+
+| 设计稿档位 | 高度 | 圆角 | 左右 padding | 对应 class | PortalUI 档位名 |
+| --- | --- | --- | --- | --- | --- |
+| `Small` | 24px | 24px | 16px | `por-btn-small` | small |
+| `Medium` | 32px | 24px | 24px | `por-btn`（默认） | default |
+| `Large` | 40px | 24px | 32px | `por-btn-middle` | middle |
+| `XLarge` | 48px | 24px | 48px | `por-btn-large` | large |
+
+> **设计稿的 `Large` 不是 `por-btn-large`**，而是 `por-btn-middle`（40px）；设计稿的 `XLarge` 才是 `por-btn-large`（48px）。按名字直接映射会让整组按钮偏大一档。
+
+实测补充：
+
+- **主按钮填充 `#191919`**（深墨黑），不是华为红。`#C7000B` 在按钮节点中仅用于 error-active 语义（危险操作、促销），不作默认主按钮。
+- 次要按钮：1px `#595959` 描边 + 透明底 + `#191919` 文字。
+- 上下 padding 四档恒为 `13px`（文字基线固定），仅左右 padding 随档位递增（16 / 24 / 32 / 48）。
+- 宽度不写死：由「文字宽 + 左右 padding」撑开，设计稿中的 80/104/120/152 均为 4 字文案下的结果。
+
 ## 响应式尺寸
 
 使用 `.por-btn-*-*` 创建响应式尺寸按钮：

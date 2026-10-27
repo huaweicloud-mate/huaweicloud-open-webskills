@@ -51,7 +51,37 @@ font-family: HuaweiSans, PingFang SC, Microsoft YaHei, sans-serif;
 <h3 class="por-text-title-t3">卡片标题</h3>
 <div class="por-text-body-t1">正文内容</div>
 <div class="por-text-body-t2">次级正文</div>
+<div class="por-text-body-t3">辅助说明</div>
 ```
+
+## 5.1 官网实测字阶（补充档位）
+
+上面 6 个语义类**不覆盖**官网实际使用的全部字号。按 3,873 个文本节点实测，出现频次如下：
+
+| 字号 | 使用次数 | 典型用途 | 实现方式 |
+| --- | --- | --- | --- |
+| `14px` | 1715 | 正文默认，占比最高 | `por-text-body-t3` |
+| `16px` | 686 | 次级标题 / 大正文 | `por-text-body-t2` |
+| `12px` | 649 | **辅助说明、标签、表格内文** | 无现成类，自定义 `font-size: 12px` |
+| `20px` | 215 | **卡片标题** | 无现成类，自定义 |
+| `24px` | 145 | **楼层小标题** | 无现成类，自定义 |
+| `28px` | 89 | 楼层小标题（大） | 无现成类，自定义 |
+| `32px` / `36px` | 26 / 145 | **楼层主标题** | 无现成类，自定义 |
+| `40px` | 6 | Banner 副标题 | `por-text-title-t3` |
+| `44px` / `48px` | 6 / 6 | Banner 副标题（大） | `por-text-title-t2`（48） |
+| `54px` / `56px` / `60px` | 6 / 10 / 3 | Banner 主标题 | `por-text-title-t1`（60） |
+
+完整字阶：`10 · 12 · 14 · 16 · 18 · 20 · 24 · 28 · 32 · 36 · 40 · 44 · 48 · 54 · 56 · 60`
+
+```css
+/* 缺失档位的补充定义（官网页面使用） */
+.hc-text-caption { font-size: 12px; line-height: 20px; }  /* 辅助说明、表格内文 */
+.hc-text-card-title { font-size: 20px; line-height: 30px; font-weight: 500; }
+.hc-text-section-title { font-size: 32px; line-height: 48px; font-weight: 500; }
+.hc-text-section-title-lg { font-size: 36px; line-height: 54px; font-weight: 500; }
+```
+
+> 楼层标题不要用 `por-text-title-t3`（40px）：卡片楼层用 40px 会过大，实测楼层标题集中在 **32/36px**，卡片标题在 **20px**。
 
 ## 6. 单行省略
 

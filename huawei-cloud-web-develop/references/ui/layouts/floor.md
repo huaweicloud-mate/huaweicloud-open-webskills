@@ -22,6 +22,38 @@
 </div>
 ```
 
+## 官网楼层版式（1600 内容区）
+
+官网楼层与门户楼层的差别在内容区宽度：官网用 `1600px`，门户用 `1280px`。楼层上下 padding 两者都是 `76px`。
+
+```html
+<!-- 官网楼层：背景铺满，内容居中 1600 -->
+<div class="por-section hc-section" data-bg="grey">
+    <div class="hc-section-inner">
+        <div class="por-section-head">
+            <h3 class="por-section-title">楼层主标题（32 / 36px）</h3>
+            <div class="por-section-subtitle">楼层副标题（16px，辅助色 #595959）</div>
+        </div>
+        <div class="por-section-body">
+            <!-- 卡片组：gap 24 / 28 / 40，见 cards.md -->
+        </div>
+    </div>
+</div>
+```
+
+```css
+.hc-section { padding: 76px 0; }                 /* 楼层上下留白恒为 76px */
+.hc-section-inner { width: 1600px; max-width: 100%; margin: 0 auto; }
+
+@media (max-width: 1599px) { .hc-section-inner { width: 1384px; } }  /* 1536 − 76×2 */
+@media (max-width: 1279px) { .hc-section-inner { width: 1128px; } }  /* 1280 − 76×2 */
+@media (max-width: 1023px) { .hc-section-inner { width: 872px; } }   /* 1024 − 76×2 */
+```
+
+- 楼层标题到内容区的间距为 `40px`（`--por-section-head-padding-bottom-pc-l`）；
+- 楼层灰底用 `#F5F5F5`，卡片灰底用 `#FAFAFA`，两级别混用同一个灰；
+- 相邻楼层若为同底色，用 `por-section-merge-spacing-top/bottom` 收掉其中一个的 76px。
+
 ## 不同背景颜色
 
 通过属性 `data-bg` 配置：`light`（默认）、`white`、`grey`、`dark`、`blue`、`transBlack`、`transWhite`、`transparent`。
