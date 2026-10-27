@@ -15,8 +15,9 @@
 | huawei-cloud-web-code-style | Vue3 组件与代码规范：SFC 结构、命名、props/emits、TS 类型、评审清单 |
 | huawei-cloud-web-nav-footer | 华为云风格页头 NavBar 与页尾 Footer：黑色中国站顶栏、白色吸顶导航、移动端汉堡菜单、营销页尾，Vue3 组件即插即用 |
 | huawei-cloud-web-ui | 华为云官网 UI 设计规范（cnpm-baseui 3.0.17，v2.9.1）：设计 Token（por- 前缀 CSS 变量）、完整组件库（按钮/链接/输入框/下拉/单选复选/日期/弹窗/提示/标签/面包屑/分页/轮播/顶部广告横幅/通栏广告/插画/套餐对比表格/产品页内导航/评分/价格/倒计时/滚动条/播放器/页签/锚点/折叠/卡片/服务表格/固定表头表格/文本/图标）、布局（楼层/优势楼层/应用场景架构图/全部产品展示/客户案例 Logo 墙/新闻博客推荐/奖项图书展示/推荐文档/常见问题/套餐组合卡/产品推荐卡片/栅格）、页头接入（开发者官网场景默认接入公共 `<hd-header>`）、XTemplate 与完整示例 |
+| huawei-cloud-web-ui-check | 华为云官网 UX 规范校验：给定 HTML 页面，跑静态脚本（10 条硬规则：色板/字阶/圆角/按钮/删除线/栅格/内容区/层级/字族）+ 三份清单（全局 Token / 组件 / 楼层），输出分级校验报告 |
 | **huawei-cloud-web-develop** | **（合并新增）开发阶段入口技能**：合并 scaffold/ui/nav-footer/login/form/responsive-layout/code-style，端到端开发，内置「OpenTiny 组件优先」「项目 CSS 加 `#项目id` 前缀」两条强制规则；`references/ui/` 汇总官网 UI 规范（v2.9.1）全量内容——组件库含通栏广告/插画/套餐对比表格/产品页内导航，布局含优势楼层/应用场景架构图/全部产品展示/客户案例 Logo 墙/新闻博客推荐/奖项图书/推荐文档/常见问题/套餐组合卡/产品推荐卡片 |
-| **huawei-cloud-web-review** | **（合并新增）测试/QA 阶段入口技能**：合并 compatibility/performance + code-style 评审清单，做兼容性、性能与代码规范审查（暂不含 UI 审查） |
+| **huawei-cloud-web-review** | **（合并新增）测试/QA 阶段入口技能**：合并 compatibility/performance/ui-check + code-style 评审清单，做兼容性、性能、UI/UX 规范与代码规范审查 |
 | huawei-activity-submit-prod | 华为云开放能力线上闯关挑战作品提交（**生产环境**，Agent 接口 `{base}/submit-activity-work`，AK/SK 请求头）：两步——「沙箱部署」(milestone=beginner，`work_link`) →「ECS 持久化部署」(milestone=intermediate，`api_link` 须含 `index.html`，附 `X-HW-PROJECT-ID`/`X-HW-REGION` 头)，成功后回报积分；沙箱后询问是否发布作品展览馆（未发布则 ECS 后再问），两步完成后提醒清理按量付费资源 |
 | huawei-activity-submit-test | 同 `huawei-activity-submit-prod`，仅基地址为**测试环境** `https://opentest-dataset.huaweicloud.com/api/v1/hdopenservice/agent` |
 
@@ -35,10 +36,10 @@
 
 ### huawei-cloud-web-review（测试 / QA 阶段）
 
-- **合并自**：`huawei-cloud-web-compatibility`、`huawei-cloud-web-performance`，以及 `huawei-cloud-web-code-style` 的评审自查清单
-- **覆盖流程**：代码规范评审 → 浏览器兼容性审查 → 性能审查 → 统一验收清单
-- **范围说明**：当前**不包含 UI 设计规范审查**
-- **结构**：`SKILL.md` + `references/`（browser-compatibility/browser-matrix/resolution-support/compatibility-techniques/performance/performance-metrics/performance-techniques/review-checklist）+ `assets/`（`feature-detect.js`/`vitals-collect.js`）
+- **合并自**：`huawei-cloud-web-compatibility`、`huawei-cloud-web-performance`、`huawei-cloud-web-ui-check`，以及 `huawei-cloud-web-code-style` 的评审自查清单
+- **覆盖流程**：代码规范评审 → 浏览器兼容性审查 → 性能审查 → UI/UX 设计规范校验 → 统一验收清单
+- **UI 校验依据**：`huawei-cloud-web-ui` 的实测值（设计稿 27 页 / 18289 节点），只对照数值、不编造规范值
+- **结构**：`SKILL.md` + `references/`（browser-compatibility/browser-matrix/resolution-support/compatibility-techniques/performance/performance-metrics/performance-techniques/review-checklist + `ui-check/`{overview,checklists}）+ `assets/`（`feature-detect.js`/`vitals-collect.js`/`ui-check.js`）
 
 ### 平台约束
 

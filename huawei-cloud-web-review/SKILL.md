@@ -1,6 +1,6 @@
 ---
 name: huawei-cloud-web-review
-description: 华为云前端审查 Skill（合并版），面向测试 / QA / 评审阶段：浏览器兼容性适配审查、Web 性能审查，以及 Vue 3 代码规范评审清单与统一验收清单。当需要对前端产物做浏览器兼容性、性能、代码规范的审查与验收时使用。当前不包含 UI 设计规范审查。
+description: 华为云前端审查 Skill（合并版），面向测试 / QA / 评审阶段：浏览器兼容性适配审查、Web 性能审查、官网 UI/UX 设计规范校验，以及 Vue 3 代码规范评审清单与统一验收清单。当需要对前端产物做浏览器兼容性、性能、UI 规范与代码规范的审查与验收时使用。
 ---
 
 # 华为云前端审查 Skill
@@ -9,11 +9,9 @@ description: 华为云前端审查 Skill（合并版），面向测试 / QA / �
 
 本 Skill 由审查阶段相关 skill 合并而成，供「一个阶段只加载一个 skill」的平台在**测试 / QA / 评审阶段**统一加载：
 
-`huawei-cloud-web-compatibility`、`huawei-cloud-web-performance`，以及 `huawei-cloud-web-code-style` 的评审自查清单。
+`huawei-cloud-web-compatibility`、`huawei-cloud-web-performance`、`huawei-cloud-web-ui-check`，以及 `huawei-cloud-web-code-style` 的评审自查清单。
 
-> 范围说明：当前**不包含 UI 设计规范审查**（UI 规范符合性待后续按需并入）。
-
-`SKILL.md` 只放审查工作流、判定规则与资源索引，细则以 `references/` 为准。
+`SKILL.md` 只放审查工作流、判定规则与资源索引，细则以 `references/` 为准。UI 规范校验依据 `huawei-cloud-web-ui` skill 的实测值（设计稿 27 页 / 18289 节点），只对照数值、不做主观判断。
 
 ## 审查工作流
 
@@ -36,9 +34,15 @@ description: 华为云前端审查 Skill（合并版），面向测试 / QA / �
 → 读取 `references/performance.md`；指标 `references/performance-metrics.md`、优化技巧 `references/performance-techniques.md`。
 → 工具：`assets/vitals-collect.js`（Core Web Vitals 采集器）。
 
-### 4. 汇总裁决
+### 4. UI / UX 设计规范校验
 
-将三部分结果合并，输出「通过 / 不通过 + 问题清单 + 修复建议」。统一清单见 `references/review-checklist.md`。
+以 `huawei-cloud-web-ui` 实测值为准做两级校验：先跑 `assets/ui-check.js` 的 10 条硬规则（色板 / 字阶 / 圆角 / 按钮 / 删除线 / 栅格 / 内容区 / 层级 / 字族），再按清单逐项核对组件与楼层（色彩语义、字阶场景、楼层底色节奏、四断点、卡片排布 gap 自洽验算）。
+→ 读取 `references/ui-check/overview.md`；清单 `references/ui-check/checklists/01-global-tokens.md`、`02-components.md`、`03-floors.md`。
+→ 工具：`assets/ui-check.js`（`node assets/ui-check.js page.html`，Node ≥ 18、零依赖）。
+
+### 5. 汇总裁决
+
+将四部分结果合并，输出「通过 / 不通过 + 问题清单 + 修复建议」。统一清单见 `references/review-checklist.md`。
 
 ## 资源索引
 
@@ -52,11 +56,17 @@ description: 华为云前端审查 Skill（合并版），面向测试 / QA / �
 | `references/performance.md` | 性能优化工作流与索引 |
 | `references/performance-metrics.md` | 性能指标定义、阈值与测量方法 |
 | `references/performance-techniques.md` | 资源/网络/渲染优化技巧 |
+| `references/ui-check/overview.md` | 官网 UI/UX 规范校验工作流、判定原则与 10 条规则 |
+| `references/ui-check/checklists/01-global-tokens.md` | 全局 Token 清单（色彩语义 / 字阶场景 / 间距 / 圆角 / 断点） |
+| `references/ui-check/checklists/02-components.md` | 组件级清单（按钮 / 卡片 / 价格 / Tabs / 锚点 / 页内导航 / 插画 / 通栏广告等） |
+| `references/ui-check/checklists/03-floors.md` | 楼层模块清单（13 个楼层 + gap 自洽验算） |
 | `assets/feature-detect.js` | 浏览器能力检测工具 |
 | `assets/vitals-collect.js` | Core Web Vitals 采集器 |
+| `assets/ui-check.js` | 官网 UX 规范静态校验器（10 条规则，Node ≥ 18，零依赖） |
 
 ## 注意事项
 
 - 审查以「规则 + 清单」为准，逐条核对并给出证据（截图 / 日志 / 报告 / 实测版本）。
 - 兼容性与性能均需**目标版本实测**，不能仅凭静态检查通过。
-- 本 skill 文件夹不含 `.html` 文件。
+- UI 规范校验只对照 `huawei-cloud-web-ui` 的实测值；规范外项标「无法校验」，**不得编造规范值**。
+- 本 skill 文件夹不含 `.html` / `.vue` / `.css` 文件（平台仅接受 `.md` / `.js` / `.yaml`）。
